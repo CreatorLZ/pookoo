@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { buildKnowledgeGraph } from "../index";
-import { ConfigurationItem, Usage } from "@configiq/shared";
+import { ConfigurationItem, Usage } from "@pookoo/shared";
 
 describe("buildKnowledgeGraph", () => {
   it("builds DAG nodes and edges connecting files, items, and call-sites", () => {
@@ -82,3 +82,4 @@ describe("buildKnowledgeGraph", () => {
     expect(callSiteNodes).toHaveLength(1);
   });
 });
+

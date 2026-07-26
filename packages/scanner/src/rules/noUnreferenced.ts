@@ -1,4 +1,4 @@
-import { Finding, KnowledgeGraphData, RuleDefinition } from "@configiq/shared";
+import { Finding, KnowledgeGraphData, RuleDefinition } from "@pookoo/shared";
 
 export const noUnreferencedRule: RuleDefinition = {
   id: "NO_UNREFERENCED_ENV_VAR",
@@ -47,3 +47,4 @@ export const noUnreferencedRule: RuleDefinition = {
     return findings;
   }
 };
+

@@ -1,4 +1,4 @@
-import { Finding, KnowledgeGraphData, RuleDefinition, Severity } from "@configiq/shared";
+import { Finding, KnowledgeGraphData, RuleDefinition, Severity } from "@pookoo/shared";
 import { noUnreferencedRule } from "./noUnreferenced";
 import { undocumentedRequiredRule } from "./undocumentedRequired";
 import { publicSecretRiskRule } from "./publicSecretRisk";
@@ -43,3 +43,4 @@ export function evaluateRules(
 
   return { findings, healthScore };
 }
+

@@ -1,32 +1,32 @@
-# @configiq/cli
+# @pookoo/cli
 
-> **The official command-line interface for ConfigIQ.**
+> **The official command-line interface for Pookoo.**
 
 ## Installation
 
 ```bash
-npm install -g @configiq/cli
+npm install -g @pookoo/cli
 # or
-pnpm add -g @configiq/cli
+pnpm add -g @pookoo/cli
 ```
 
 ## Usage
 
 ```bash
 # Scan a repository
-configiq scan /path/to/project
+pookoo scan /path/to/project
 
 # Scan current directory with markdown output
-configiq scan . --format markdown --output config-report.md
+pookoo scan . --format markdown --output config-report.md
 
 # Scan and fail CI build on HIGH or CRITICAL findings
-configiq scan . --fail-on HIGH
+pookoo scan . --fail-on HIGH
 
 # JSON output for programmatic consumption
-configiq scan . --format json
+pookoo scan . --format json
 
 # Run environment diagnostics
-configiq doctor
+pookoo doctor
 ```
 
 ## Exit Codes

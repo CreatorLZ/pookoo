@@ -1,12 +1,12 @@
 {
-  "name": "@configiq/cli",
+  "name": "@pookoo/cli",
   "version": "0.1.0",
   "private": true,
   "description": "ConfigIQ Command Line Interface",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "bin": {
-    "configiq": "./dist/index.js"
+    "pookoo": "./dist/index.js"
   },
   "files": ["dist"],
   "scripts": {
@@ -17,8 +17,8 @@
     "prepublishOnly": "pnpm build"
   },
   "dependencies": {
-    "@configiq/scanner": "workspace:*",
-    "@configiq/shared": "workspace:*",
+    "@pookoo/scanner": "workspace:*",
+    "@pookoo/shared": "workspace:*",
     "commander": "^12.0.0"
   },
   "devDependencies": {
@@ -26,3 +26,6 @@
     "vitest": "^1.4.0"
   }
 }
+
+
+

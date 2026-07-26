@@ -4,7 +4,7 @@ import {
   KnowledgeGraphData,
   KnowledgeGraphNode,
   KnowledgeGraphEdge
-} from "@configiq/shared";
+} from "@pookoo/shared";
 
 export interface KnowledgeGraphOptions {
   extraDeclarations?: Map<string, string[]>;
@@ -103,3 +103,4 @@ export function buildKnowledgeGraph(
 
   return { nodes, edges };
 }
+

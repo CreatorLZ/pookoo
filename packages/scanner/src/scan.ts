@@ -1,4 +1,4 @@
-import { ScanResult } from "@configiq/shared";
+import { ScanResult } from "@pookoo/shared";
 import { walkDirectory, FileWalkerOptions } from "./loader/walker";
 import { detectFrameworks } from "./framework-detection";
 import { discoverConfigurationItems, discoverConfigurationItemFiles } from "./variable-discovery";
@@ -65,3 +65,4 @@ export function scan(targetPath: string, options: Partial<ScanOptions> = {}): Sc
     scannedFilesCount: files.length
   };
 }
+

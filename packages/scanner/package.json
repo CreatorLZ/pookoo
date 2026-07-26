@@ -1,5 +1,5 @@
 {
-  "name": "@configiq/scanner",
+  "name": "@pookoo/scanner",
   "version": "0.1.0",
   "private": true,
   "description": "ConfigIQ Core Static Analysis and Graph Reasoning Engine",
@@ -13,7 +13,7 @@
     "lint": "eslint src/"
   },
   "dependencies": {
-    "@configiq/shared": "workspace:*",
+    "@pookoo/shared": "workspace:*",
     "js-yaml": "^5.2.2",
     "picocolors": "^1.1.1"
   },
@@ -22,3 +22,8 @@
     "vitest": "^1.4.0"
   }
 }
+
+
+
+
+

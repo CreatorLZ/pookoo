@@ -1,4 +1,4 @@
-import { ConfigurationItem } from "@configiq/shared";
+import { ConfigurationItem } from "@pookoo/shared";
 
 export interface ParseDotenvOptions {
   filePath: string;
@@ -104,3 +104,4 @@ export function parseDotenv(content: string, options: ParseDotenvOptions): Confi
 
   return items;
 }
+

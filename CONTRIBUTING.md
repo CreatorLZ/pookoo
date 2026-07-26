@@ -1,8 +1,8 @@
-# Contributing to ConfigIQ (`CONTRIBUTING.md`)
+# Contributing to Pookoo (`CONTRIBUTING.md`)
 
 > **Contributor Guidelines for Human Engineers and AI Coding Agents.**
 
-Thank you for contributing to **ConfigIQ**! We maintain an extremely high engineering standard to ensure long-term maintainability, zero security leaks, and exceptional developer experience.
+Thank you for contributing to **Pookoo**! We maintain an extremely high engineering standard to ensure long-term maintainability, zero security leaks, and exceptional developer experience.
 
 ---
 
@@ -10,7 +10,7 @@ Thank you for contributing to **ConfigIQ**! We maintain an extremely high engine
 
 1. **Documentation & Specification First**: No feature code is written without an approved specification in `/specs/` and an updated entry in [TASKS.md](TASKS.md).
 2. **Folders Over Packages**: Maintain all scanner submodules (`framework-detection`, `variable-discovery`, `usage-mapping`, `parser`, `rules`, `knowledge`, `reporter`) inside `packages/scanner/src/`. Do not create new packages in `packages/` without an approved ADR in [DECISIONS.md](DECISIONS.md).
-3. **Deterministic & Pure**: Code in `@configiq/scanner` must be stateless, side-effect free, and 100% testable offline via Vitest.
+3. **Deterministic & Pure**: Code in `@pookoo/scanner` must be stateless, side-effect free, and 100% testable offline via Vitest.
 4. **Strict TypeScript**: No `any` types. Full type signatures required for all exports.
 
 ---
@@ -20,8 +20,8 @@ Thank you for contributing to **ConfigIQ**! We maintain an extremely high engine
 ### Local Setup
 ```bash
 # 1. Clone repo
-git clone https://github.com/configiq/configiq.git
-cd configiq
+git clone https://github.com/CreatorLZ/pookoo.git
+cd pookoo
 
 # 2. Install dependencies via pnpm
 pnpm install

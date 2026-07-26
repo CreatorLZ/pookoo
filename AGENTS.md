@@ -68,5 +68,5 @@ flowchart TD
 
 ## 4. Code Quality & DX Standards
 - **Zero `any` Types**: All TypeScript code must be strictly typed without using `any`.
-- **Pure Functions**: Write side-effect-free functions in `@configiq/scanner`.
+- **Pure Functions**: Write side-effect-free functions in `@pookoo/scanner`.
 - **Vitest Testing Required**: Every new module inside `packages/scanner/src/` must include corresponding `.test.ts` files testing edge cases.

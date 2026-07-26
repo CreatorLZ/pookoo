@@ -1,5 +1,5 @@
 import * as yaml from "js-yaml";
-import { ConfigurationItem } from "@configiq/shared";
+import { ConfigurationItem } from "@pookoo/shared";
 
 export interface ParseYamlOptions {
   filePath: string;
@@ -111,3 +111,4 @@ export function parseYamlEnvironment(content: string, options: ParseYamlOptions)
 
   return items;
 }
+

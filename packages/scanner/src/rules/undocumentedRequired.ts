@@ -1,4 +1,4 @@
-import { Finding, KnowledgeGraphData, RuleDefinition } from "@configiq/shared";
+import { Finding, KnowledgeGraphData, RuleDefinition } from "@pookoo/shared";
 
 export const undocumentedRequiredRule: RuleDefinition = {
   id: "UNDOCUMENTED_REQUIRED_VAR",
@@ -29,3 +29,4 @@ export const undocumentedRequiredRule: RuleDefinition = {
     return findings;
   }
 };
+

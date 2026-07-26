@@ -38,10 +38,10 @@ importers:
 
   apps/cli:
     dependencies:
-      '@configiq/scanner':
+      '@pookoo/scanner':
         specifier: workspace:*
         version: link:../../packages/scanner
-      '@configiq/shared':
+      '@pookoo/shared':
         specifier: workspace:*
         version: link:../../packages/shared
       commander:
@@ -57,7 +57,7 @@ importers:
 
   packages/scanner:
     dependencies:
-      '@configiq/shared':
+      '@pookoo/shared':
         specifier: workspace:*
         version: link:../shared
       js-yaml:

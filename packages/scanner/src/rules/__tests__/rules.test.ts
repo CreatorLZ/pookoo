@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { evaluateRules } from "../index";
-import { KnowledgeGraphData } from "@configiq/shared";
+import { KnowledgeGraphData } from "@pookoo/shared";
 
 describe("evaluateRules", () => {
   it("flags dead configuration variables", () => {
@@ -143,3 +143,4 @@ describe("evaluateRules", () => {
     expect(findings.filter((f) => f.ruleId === "FALLBACK_INCONSISTENCY")).toHaveLength(0);
   });
 });
+

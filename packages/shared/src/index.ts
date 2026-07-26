@@ -1,5 +1,5 @@
 /**
- * Core Domain Primitive Types for ConfigIQ
+ * Core Domain Primitive Types for Pookoo
  * Defined per GLOSSARY.md specifications.
  */
 

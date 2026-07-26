@@ -1,5 +1,5 @@
 {
-  "name": "configiq-monorepo",
+  "name": "pookoo-monorepo",
   "private": true,
   "version": "0.1.0",
   "type": "module",
@@ -30,3 +30,5 @@
     "pnpm": ">=8.0.0"
   }
 }
+
+

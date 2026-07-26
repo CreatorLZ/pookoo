@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { formatJsonReport } from "../json";
-import { ScanResult } from "@configiq/shared";
+import { ScanResult } from "@pookoo/shared";
 
 describe("formatJsonReport", () => {
   it("returns valid JSON string", () => {
@@ -42,3 +42,4 @@ describe("formatJsonReport", () => {
     expect(parsed.healthScore).toBe(85);
   });
 });
+

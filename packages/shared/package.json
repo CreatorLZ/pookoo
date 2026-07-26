@@ -1,5 +1,5 @@
 {
-  "name": "@configiq/shared",
+  "name": "@pookoo/shared",
   "version": "0.1.0",
   "private": true,
   "description": "ConfigIQ Shared Domain Types and Utilities",
@@ -15,3 +15,12 @@
     "typescript": "^5.4.0"
   }
 }
+
+
+
+
+
+
+
+
+

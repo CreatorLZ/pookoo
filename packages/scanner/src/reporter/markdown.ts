@@ -1,9 +1,9 @@
-import { ScanResult } from "@configiq/shared";
+import { ScanResult } from "@pookoo/shared";
 
 export function formatMarkdownReport(result: ScanResult): string {
   const lines: string[] = [];
 
-  lines.push("# ConfigIQ Configuration Health Report\n");
+  lines.push("# Pookoo Configuration Health Report\n");
   lines.push(`- **Scanned Files**: ${result.scannedFilesCount}`);
   lines.push(`- **Repository Health Score**: \`${result.healthScore}/100.0\`\n`);
 
@@ -32,3 +32,4 @@ export function formatMarkdownReport(result: ScanResult): string {
 
   return lines.join("\n");
 }
+

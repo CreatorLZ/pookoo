@@ -1,4 +1,4 @@
-import { ScanResult } from "@configiq/shared";
+import { ScanResult } from "@pookoo/shared";
 import pc from "picocolors";
 
 function severityColor(severity: string): (s: string) => string {
@@ -15,7 +15,7 @@ export function formatTerminalReport(result: ScanResult): string {
   const lines: string[] = [];
 
   lines.push(pc.bold(pc.cyan("\n╔══════════════════════════════════════════════════╗")));
-  lines.push(pc.bold(pc.cyan("║     ConfigIQ Configuration Reasoning Engine     ║")));
+  lines.push(pc.bold(pc.cyan("║     Pookoo Configuration Reasoning Engine      ║")));
   lines.push(pc.bold(pc.cyan("╚══════════════════════════════════════════════════╝")));
 
   lines.push(`\n${pc.dim("Scanned Files:")} ${pc.white(String(result.scannedFilesCount))}`);
@@ -40,3 +40,4 @@ export function formatTerminalReport(result: ScanResult): string {
 
   return lines.join("\n");
 }
+

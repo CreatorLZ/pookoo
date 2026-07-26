@@ -1,4 +1,4 @@
-import { ConfigurationItem } from "@configiq/shared";
+import { ConfigurationItem } from "@pookoo/shared";
 
 export interface ParseJsonOptions {
   filePath: string;
@@ -47,3 +47,4 @@ export function parseJsonManifest(content: string, options: ParseJsonOptions): C
 
   return items;
 }
+

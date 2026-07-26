@@ -1,6 +1,6 @@
-# ConfigIQ Core Domain Glossary
+# Pookoo Core Domain Glossary
 
-This document serves as the canonical domain lexicon for **ConfigIQ**. Every specification, architectural diagram, codebase comment, rule definition, and documentation file must conform to the terminology established here.
+This document serves as the canonical domain lexicon for **Pookoo**. Every specification, architectural diagram, codebase comment, rule definition, and documentation file must conform to the terminology established here.
 
 ---
 
@@ -13,7 +13,7 @@ This document serves as the canonical domain lexicon for **ConfigIQ**. Every spe
 
 ### 2. Scanner
 * **Definition**: The deterministic static analysis pipeline responsible for ingesting a repository filesystem, building an Abstract Syntax Tree (AST) representation, detecting frameworks, discovering Configuration Items, mapping code usages, building a Knowledge Graph, and executing Rule evaluation.
-* **Attributes**: Implemented as the root library `@configiq/scanner`. Pure, stateless, headless, and zero-side-effect execution engine.
+* **Attributes**: Implemented as the root library `@pookoo/scanner`. Pure, stateless, headless, and zero-side-effect execution engine.
 
 ### 3. Usage (Call-site Mapping)
 * **Definition**: An explicit reference or read operation in source code or infrastructure definitions targeting a specific Configuration Item.

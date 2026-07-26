@@ -1,4 +1,4 @@
-import { Usage } from "@configiq/shared";
+import { Usage } from "@pookoo/shared";
 import { VirtualFile } from "../loader/walker";
 import { parseTypeScriptSource } from "../parser/typescript";
 
@@ -18,3 +18,4 @@ export function mapRepositoryUsages(files: VirtualFile[]): Usage[] {
 
   return allUsages;
 }
+

@@ -7,7 +7,7 @@ export interface ConfigIqConfig {
   severityOverrides?: Record<string, string>;
 }
 
-const CONFIG_FILES = [".configiqrc", ".configiqrc.json", "configiq.json"];
+const CONFIG_FILES = [".pookoorc", ".pookoorc.json", "pookoo.json"];
 
 export function loadConfig(targetPath: string): ConfigIqConfig {
   for (const configFile of CONFIG_FILES) {
@@ -23,3 +23,4 @@ export function loadConfig(targetPath: string): ConfigIqConfig {
   }
   return {};
 }
+

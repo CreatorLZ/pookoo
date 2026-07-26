@@ -1,4 +1,4 @@
-import { ConfigurationItem } from "@configiq/shared";
+import { ConfigurationItem } from "@pookoo/shared";
 import { VirtualFile } from "../loader/walker";
 import { FrameworkMetadata } from "../framework-detection";
 import { parseDotenv } from "../parser/dotenv";
@@ -104,3 +104,4 @@ export function discoverConfigurationItemFiles(
 
   return declaredIn;
 }
+

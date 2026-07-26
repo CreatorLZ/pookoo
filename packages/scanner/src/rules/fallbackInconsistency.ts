@@ -1,4 +1,4 @@
-import { Finding, KnowledgeGraphData, RuleDefinition } from "@configiq/shared";
+import { Finding, KnowledgeGraphData, RuleDefinition } from "@pookoo/shared";
 
 export const fallbackInconsistencyRule: RuleDefinition = {
   id: "FALLBACK_INCONSISTENCY",
@@ -67,3 +67,4 @@ export const fallbackInconsistencyRule: RuleDefinition = {
     return findings;
   }
 };
+

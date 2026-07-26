@@ -1,4 +1,4 @@
-import { Finding, KnowledgeGraphData, RuleDefinition } from "@configiq/shared";
+import { Finding, KnowledgeGraphData, RuleDefinition } from "@pookoo/shared";
 
 const SENSITIVE_KEYWORDS = ["SECRET", "KEY", "TOKEN", "PASSWORD", "PRIVATE", "AUTH"];
 
@@ -34,3 +34,4 @@ export const publicSecretRiskRule: RuleDefinition = {
     return findings;
   }
 };
+

@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { formatMarkdownReport } from "../markdown";
-import { ScanResult } from "@configiq/shared";
+import { ScanResult } from "@pookoo/shared";
 
 describe("formatMarkdownReport", () => {
   it("includes health score and file count", () => {
@@ -55,3 +55,4 @@ describe("formatMarkdownReport", () => {
     expect(output).not.toContain("[!NOTE]");
   });
 });
+

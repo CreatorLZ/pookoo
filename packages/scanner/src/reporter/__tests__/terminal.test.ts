@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { formatTerminalReport } from "../terminal";
-import { ScanResult } from "@configiq/shared";
+import { ScanResult } from "@pookoo/shared";
 
 describe("formatTerminalReport", () => {
   it("includes health score and file count", () => {
@@ -14,7 +14,7 @@ describe("formatTerminalReport", () => {
     const output = formatTerminalReport(result);
     expect(output).toContain("95.5");
     expect(output).toContain("42");
-    expect(output).toContain("ConfigIQ");
+    expect(output).toContain("Pookoo");
   });
 
   it("shows success message when no findings", () => {
@@ -54,3 +54,4 @@ describe("formatTerminalReport", () => {
     expect(output).not.toContain("No configuration issues");
   });
 });
+

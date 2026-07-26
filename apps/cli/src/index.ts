@@ -3,13 +3,13 @@
 import { Command } from "commander";
 import * as fs from "fs";
 import * as path from "path";
-import { scan, formatTerminalReport, formatMarkdownReport, formatJsonReport } from "@configiq/scanner";
+import { scan, formatTerminalReport, formatMarkdownReport, formatJsonReport } from "@pookoo/scanner";
 
 const program = new Command();
 
 program
-  .name("configiq")
-  .description("ConfigIQ - Intelligent Configuration Reasoning Engine")
+  .name("pookoo")
+  .description("Pookoo - Intelligent Configuration Reasoning Engine")
   .version("0.1.0");
 
 program
@@ -78,7 +78,7 @@ program
 
     const separator = "─".repeat(50);
     console.log(`\n${separator}`);
-    console.log("  ConfigIQ Environment Diagnostics");
+    console.log("  Pookoo Environment Diagnostics");
     console.log(`${separator}\n`);
 
     console.log(`  ${isNodeOk ? "✓" : "✗"} Node.js    : ${nodeVersion} ${isNodeOk ? "(OK)" : "(requires >= 18)"}`);
@@ -92,3 +92,5 @@ program
 if (require.main === module) {
   program.parse(process.argv);
 }
+
+

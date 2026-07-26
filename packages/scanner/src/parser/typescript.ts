@@ -1,5 +1,5 @@
 import * as ts from "typescript";
-import { Usage, CallType } from "@configiq/shared";
+import { Usage, CallType } from "@pookoo/shared";
 
 export interface ParseTypeScriptOptions {
   filePath: string;
@@ -145,3 +145,4 @@ export function parseTypeScriptSource(content: string, options: ParseTypeScriptO
   visit(sourceFile);
   return usages;
 }
+
