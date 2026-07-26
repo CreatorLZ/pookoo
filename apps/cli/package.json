@@ -1,0 +1,28 @@
+{
+  "name": "@configiq/cli",
+  "version": "0.1.0",
+  "private": true,
+  "description": "ConfigIQ Command Line Interface",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "configiq": "./dist/index.js"
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc -w",
+    "test": "vitest run --passWithNoTests",
+    "lint": "eslint src/",
+    "prepublishOnly": "pnpm build"
+  },
+  "dependencies": {
+    "@configiq/scanner": "workspace:*",
+    "@configiq/shared": "workspace:*",
+    "commander": "^12.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0",
+    "vitest": "^1.4.0"
+  }
+}

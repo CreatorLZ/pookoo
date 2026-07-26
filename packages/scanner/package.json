@@ -1,0 +1,24 @@
+{
+  "name": "@configiq/scanner",
+  "version": "0.1.0",
+  "private": true,
+  "description": "ConfigIQ Core Static Analysis and Graph Reasoning Engine",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc -w",
+    "test": "vitest run --passWithNoTests",
+    "lint": "eslint src/"
+  },
+  "dependencies": {
+    "@configiq/shared": "workspace:*",
+    "js-yaml": "^5.2.2",
+    "picocolors": "^1.1.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0",
+    "vitest": "^1.4.0"
+  }
+}

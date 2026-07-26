@@ -1,0 +1,106 @@
+import { ConfigurationItem } from "@configiq/shared";
+import { VirtualFile } from "../loader/walker";
+import { FrameworkMetadata } from "../framework-detection";
+import { parseDotenv } from "../parser/dotenv";
+import { parseYamlEnvironment } from "../parser/yaml";
+
+export function discoverConfigurationItems(
+  files: VirtualFile[],
+  frameworks: FrameworkMetadata[] = []
+): ConfigurationItem[] {
+  const itemsMap = new Map<string, ConfigurationItem>();
+  const envExampleComments = new Map<string, ConfigurationItem>();
+
+  for (const file of files) {
+    if (file.fileType === "ENV") {
+      const isExampleFile = file.relativePath.includes(".env.example");
+
+      const parsedItems = parseDotenv(file.content, { filePath: file.relativePath });
+
+      if (isExampleFile) {
+        for (const item of parsedItems) {
+          const existing = envExampleComments.get(item.key);
+          if (!existing && item.rawComment) {
+            envExampleComments.set(item.key, item);
+          }
+        }
+        continue;
+      }
+
+      for (const item of parsedItems) {
+        let frameworkName: string | undefined;
+        for (const fw of frameworks) {
+          if (fw.publicPrefixes.some((prefix) => item.key.startsWith(prefix))) {
+            frameworkName = fw.name;
+            break;
+          }
+        }
+
+        const existing = itemsMap.get(item.key);
+        if (!existing) {
+          itemsMap.set(item.key, {
+            ...item,
+            inferredFramework: frameworkName
+          });
+        } else {
+          if (!existing.rawComment && item.rawComment) {
+            existing.rawComment = item.rawComment;
+          }
+          if (!existing.defaultValue && item.defaultValue) {
+            existing.defaultValue = item.defaultValue;
+          }
+        }
+      }
+    } else if (file.fileType === "CONTAINER") {
+      const parsedItems = parseYamlEnvironment(file.content, { filePath: file.relativePath });
+      for (const item of parsedItems) {
+        if (!itemsMap.has(item.key)) {
+          itemsMap.set(item.key, item);
+        }
+      }
+    }
+  }
+
+  const items = Array.from(itemsMap.values());
+
+  for (const item of items) {
+    if (!item.rawComment) {
+      const example = envExampleComments.get(item.key);
+      if (example?.rawComment) {
+        item.rawComment = example.rawComment;
+      }
+    }
+  }
+
+  return items;
+}
+
+export function discoverConfigurationItemFiles(
+  files: VirtualFile[]
+): Map<string, string[]> {
+  const declaredIn = new Map<string, string[]>();
+
+  for (const file of files) {
+    if (file.fileType === "ENV") {
+      const parsedItems = parseDotenv(file.content, { filePath: file.relativePath });
+      for (const item of parsedItems) {
+        const paths = declaredIn.get(item.key) || [];
+        if (!paths.includes(file.relativePath)) {
+          paths.push(file.relativePath);
+        }
+        declaredIn.set(item.key, paths);
+      }
+    } else if (file.fileType === "CONTAINER") {
+      const parsedItems = parseYamlEnvironment(file.content, { filePath: file.relativePath });
+      for (const item of parsedItems) {
+        const paths = declaredIn.get(item.key) || [];
+        if (!paths.includes(file.relativePath)) {
+          paths.push(file.relativePath);
+        }
+        declaredIn.set(item.key, paths);
+      }
+    }
+  }
+
+  return declaredIn;
+}
