@@ -28,6 +28,21 @@ coverage
 # Generated outputs
 report.md
 
+# Internal project docs (not part of the shipped product)
+ANTI_GOALS.md
+MANIFESTO.md
+VISION.md
+PRODUCT.md
+ROADMAP.md
+ARCHITECTURE.md
+DECISIONS.md
+MILESTONES.md
+TASKS.md
+docs/
+specs/
+packages/scanner/README.md
+packages/shared/README.md
+
 # Logs
 npm-debug.log*
 yarn-debug.log*
