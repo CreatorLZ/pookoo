@@ -26,7 +26,7 @@ ConfigIQ answers essential questions for any codebase:
 - **Is it dead configuration?** Is a declared environment variable completely unreferenced in source code?
 - **Is it safe?** Are sensitive runtime options exposed through dynamic client-side prefixes (e.g., `NEXT_PUBLIC_` or `VITE_`)?
 
-Refer to the complete [GLOSSARY.md](GLOSSARY.md) for canonical definitions of core domain concepts (*Configuration Item*, *Usage*, *Knowledge Graph*, *Rule*, *Finding*, *Health Score*).
+Refer to the complete [GLOSSARY.md](GLOSSARY.md) locally for canonical definitions of core domain concepts (*Configuration Item*, *Usage*, *Knowledge Graph*, *Rule*, *Finding*, *Health Score*).
 
 ---
 
@@ -43,7 +43,7 @@ Our north star is simple:
 4. **Library-First Architecture**: The core analysis engine lives inside `@configiq/scanner`. Clients (CLI, future VS Code extension, future GitHub Action) are thin presentation layers over the scanner library.
 5. **Human and AI Agent Friendly**: Every specification, file boundary, and architectural document is written to allow autonomous AI agents and human engineers to collaborate seamlessly.
 
-See our complete engineering ethos in [MANIFESTO.md](MANIFESTO.md) and long-term positioning in [VISION.md](VISION.md).
+See `MANIFESTO.md`, `VISION.md`, and `ARCHITECTURE.md` locally for engineering philosophy, product vision, and technical blueprint.
 
 ---
 
@@ -53,31 +53,11 @@ ConfigIQ is organized as a high-performance TypeScript monorepo managed with `pn
 
 ```
 configiq/
-├── GLOSSARY.md               # Canonical domain lexicon & entity definitions
-├── MANIFESTO.md              # Engineering principles & design philosophy
-├── VISION.md                 # Product vision, market positioning, target audience
-├── PRODUCT.md                # Feature scope, user journeys, competitive analysis
-├── ARCHITECTURE.md           # Technical blueprint, AST parser pipeline, Knowledge Graph
-├── ROADMAP.md                # Multi-phase milestone execution plan
-├── AGENTS.md                 # Operating guidelines & constraints for AI agents
-├── TASKS.md                  # Actionable engineering backlog
-├── MILESTONES.md             # Project milestone state tracker
-├── DECISIONS.md              # Architecture Decision Records (ADRs)
-├── ANTI_GOALS.md             # Boundaries detailing what ConfigIQ intentionally refuses to be
-├── CONTRIBUTING.md           # Development workflow, specifications, PR standards
+├── CONTRIBUTING.md           # Development workflow & PR standards
 ├── LICENSE                   # MIT License
-├── docs/                     # Detailed guides and usage manuals
-├── specs/                    # Formal technical specifications per subsystem
-│   ├── scanner.md
-│   ├── framework-detection.md
-│   ├── variable-discovery.md
-│   ├── usage-mapping.md
-│   ├── knowledge-graph.md
-│   ├── rules-engine.md
-│   ├── reporter.md
-│   └── cli.md
 ├── apps/
 │   └── cli/                  # Command-line interface client (@configiq/cli)
+│       └── README.md         # CLI usage documentation
 └── packages/
     ├── scanner/              # Core static analysis & reasoning engine (@configiq/scanner)
     │   └── src/
@@ -93,20 +73,9 @@ configiq/
 
 ---
 
-## 🚦 Current Status & Roadmap
+## 🚦 Current Status
 
-ConfigIQ is currently at **Milestone 0 (Repository Foundation & Engineering Blueprint Established)**. The engineering operating system, specs, package manifests, and monorepo boundaries are fully scaffolded and ready for Milestone 1 implementation.
-
-| Phase | Description | Status |
-| :--- | :--- | :--- |
-| **Phase 0** | Architecture, Engineering Operating System, Specifications | 🟩 Completed |
-| **Phase 1** | Shared Primitive Types & AST Parser Engine | 🟦 Planned |
-| **Phase 2** | Configuration Item Discovery & Framework Detectors | ⬜ Backlog |
-| **Phase 3** | Call-Site Usage Mapping & Knowledge Graph DAG | ⬜ Backlog |
-| **Phase 4** | Rules Engine & Health Score Evaluation | ⬜ Backlog |
-| **Phase 5** | `@configiq/cli` Implementation & Terminal Reporter | ⬜ Backlog |
-
-For detailed breakdown of phases, refer to [ROADMAP.md](ROADMAP.md) and [TASKS.md](TASKS.md).
+ConfigIQ is at **v0.1.0** — a fully functional CLI with multi-format parsing, variable discovery, knowledge graph, rules engine, and 3 output reporters. See the [CLI README](apps/cli/README.md) for usage.
 
 ---
 
@@ -119,8 +88,8 @@ For detailed breakdown of phases, refer to [ROADMAP.md](ROADMAP.md) and [TASKS.m
 ### Installation
 ```bash
 # Clone the repository
-git clone https://github.com/configiq/configiq.git
-cd configiq
+git clone https://github.com/CreatorLZ/pookoo.git
+cd pookoo
 
 # Install dependencies
 pnpm install
@@ -146,12 +115,11 @@ pnpm run format
 
 ---
 
-## 📜 Architectural Decisions & Governance
+## 📜 Architectural Decisions
 
-All significant architectural choices are tracked via Architecture Decision Records in [DECISIONS.md](DECISIONS.md):
-- **ADR-001**: pnpm Workspaces & Turborepo Monorepo Architecture
-- **ADR-002**: Static Analysis First, AI Augmentation Second
-- **ADR-003**: Pure Library Scanner Architecture with Single Package Internal Subsystems
-- **ADR-004**: Graph-Based Knowledge Model for Configuration Entities
+Key architectural choices (see `DECISIONS.md` locally for full ADRs):
+- **Static Analysis First, AI Augmentation Second** — All parsing and rule checks are deterministic.
+- **Library-First** — `@configiq/scanner` is the core; CLI is a thin wrapper.
+- **Graph-Based Knowledge Model** — Configuration entities and their relationships are modeled as a DAG.
 
-Before contributing or submitting pull requests, please read [CONTRIBUTING.md](CONTRIBUTING.md) and [AGENTS.md](AGENTS.md).
+Before contributing, please read [CONTRIBUTING.md](CONTRIBUTING.md) and `AGENTS.md` (local).
