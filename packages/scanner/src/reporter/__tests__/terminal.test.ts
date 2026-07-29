@@ -3,7 +3,7 @@ import { formatTerminalReport } from "../terminal";
 import { ScanResult } from "@pookoo/shared";
 
 describe("formatTerminalReport", () => {
-  it("includes health score and file count", () => {
+  it("includes file count in summary", () => {
     const result: ScanResult = {
       knowledgeGraph: { nodes: [], edges: [] },
       findings: [],
@@ -12,9 +12,9 @@ describe("formatTerminalReport", () => {
     };
 
     const output = formatTerminalReport(result);
-    expect(output).toContain("95.5");
     expect(output).toContain("42");
     expect(output).toContain("Pookoo");
+    expect(output).not.toContain("Score");
   });
 
   it("shows success message when no findings", () => {
@@ -35,21 +35,21 @@ describe("formatTerminalReport", () => {
       findings: [
         {
           id: "finding:1",
-          ruleId: "NO_UNREFERENCED_ENV_VAR",
-          severity: "HIGH",
+          ruleId: "NO_STATIC_REFERENCE_FOUND",
+          severity: "INFO",
           targetKey: "OLD_KEY",
-          message: "Variable 'OLD_KEY' is unreferenced.",
-          explanation: "Dead config increases cognitive debt.",
-          remediation: "Remove OLD_KEY if no longer needed."
+          message: "No static source-code reference found for 'OLD_KEY'.",
+          explanation: "No direct process.env reference was found.",
+          remediation: "Investigate whether 'OLD_KEY' is still required."
         }
       ],
-      healthScore: 85,
+      healthScore: 100,
       scannedFilesCount: 10
     };
 
     const output = formatTerminalReport(result);
-    expect(output).toContain("HIGH");
-    expect(output).toContain("NO_UNREFERENCED_ENV_VAR");
+    expect(output).toContain("INFO");
+    expect(output).toContain("NO_STATIC_REFERENCE_FOUND");
     expect(output).toContain("OLD_KEY");
     expect(output).not.toContain("No configuration issues");
   });

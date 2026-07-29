@@ -39,28 +39,24 @@ export const fallbackInconsistencyRule: RuleDefinition = {
     for (const [itemKey, fallbackMap] of fallbacksByKey) {
       if (fallbackMap.size < 2) continue;
 
-      const fallbackList = Array.from(fallbackMap.entries());
-      const primaryFallback = fallbackList[0][0];
+      const distinctCount = fallbackMap.size;
+      const allLocations = Array.from(fallbackMap.values()).flat();
 
-      for (const [fallbackValue, locations] of fallbackList) {
-        if (fallbackValue === primaryFallback) continue;
-
-        for (const loc of locations) {
-          findings.push({
-            id: `finding:fallback:${itemKey}:${loc.filePath}:${loc.lineNumber}`,
-            ruleId: "FALLBACK_INCONSISTENCY",
-            severity: "MEDIUM",
-            targetKey: itemKey,
-            message: `Variable '${itemKey}' has inconsistent fallback value '${fallbackValue}' (expected '${primaryFallback}' based on other call-sites).`,
-            explanation: "Inconsistent fallback values for the same variable create ambiguity about its actual default when the environment variable is unset.",
-            remediation: `Standardize the fallback value for '${itemKey}' to '${primaryFallback}' across all call-sites or document the intended default.`,
-            sourceLocation: {
-              filePath: loc.filePath,
-              lineNumber: loc.lineNumber,
-              columnRange: [0, 0]
-            }
-          });
-        }
+      for (const loc of allLocations) {
+        findings.push({
+          id: `finding:fallback:${itemKey}:${loc.filePath}:${loc.lineNumber}`,
+          ruleId: "FALLBACK_INCONSISTENCY",
+          severity: "MEDIUM",
+          targetKey: itemKey,
+          message: `Variable '${itemKey}' has ${distinctCount} distinct fallback values across ${allLocations.length} call-sites.`,
+          explanation: "Inconsistent fallback values for the same variable create ambiguity about its actual default when the environment variable is unset.",
+          remediation: `Standardize the fallback value for '${itemKey}' to a single consistent value across all call-sites.`,
+          sourceLocation: {
+            filePath: loc.filePath,
+            lineNumber: loc.lineNumber,
+            columnRange: [0, 0]
+          }
+        });
       }
     }
 

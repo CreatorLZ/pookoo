@@ -29,15 +29,15 @@ coverage
 report.md
 
 # Internal project docs (not part of the shipped product)
-ANTI_GOALS.md
-MANIFESTO.md
 VISION.md
 PRODUCT.md
-ROADMAP.md
-ARCHITECTURE.md
-DECISIONS.md
 MILESTONES.md
 TASKS.md
+DECISIONS.md
+ROADMAP.md
+MANIFESTO.md
+ANTI_GOALS.md
+ARCHITECTURE.md
 docs/
 specs/
 packages/scanner/README.md

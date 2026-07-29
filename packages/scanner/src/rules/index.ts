@@ -1,30 +1,42 @@
 import { Finding, KnowledgeGraphData, RuleDefinition, Severity } from "@pookoo/shared";
-import { noUnreferencedRule } from "./noUnreferenced";
+import { noStaticReferenceRule } from "./noUnreferenced";
 import { undocumentedRequiredRule } from "./undocumentedRequired";
 import { publicSecretRiskRule } from "./publicSecretRisk";
 import { fallbackInconsistencyRule } from "./fallbackInconsistency";
 
 export const BUILTIN_RULES: RuleDefinition[] = [
-  noUnreferencedRule,
+  noStaticReferenceRule,
   undocumentedRequiredRule,
   publicSecretRiskRule,
   fallbackInconsistencyRule
 ];
 
 const SEVERITY_WEIGHTS: Record<Severity, number> = {
-  CRITICAL: 25,
-  HIGH: 15,
-  MEDIUM: 8,
-  LOW: 4,
-  INFO: 1
+  CRITICAL: 20,
+  HIGH: 10,
+  MEDIUM: 5,
+  LOW: 2,
+  INFO: 0
 };
 
+const MAX_PENALTY_PER_RULE = 30;
+
 export function calculateHealthScore(findings: Finding[]): number {
-  let penaltySum = 0;
+  // Group findings by ruleId, then cap the penalty per rule
+  const penaltiesByRule = new Map<string, number>();
+
   for (const finding of findings) {
-    penaltySum += SEVERITY_WEIGHTS[finding.severity] || 0;
+    const weight = SEVERITY_WEIGHTS[finding.severity] || 0;
+    const current = penaltiesByRule.get(finding.ruleId) || 0;
+    penaltiesByRule.set(finding.ruleId, current + weight);
   }
-  const score = Math.max(0, 100 - penaltySum);
+
+  let totalPenalty = 0;
+  for (const [, penalty] of penaltiesByRule) {
+    totalPenalty += Math.min(penalty, MAX_PENALTY_PER_RULE);
+  }
+
+  const score = Math.max(0, 100 - totalPenalty);
   return Math.round(score * 10) / 10;
 }
 

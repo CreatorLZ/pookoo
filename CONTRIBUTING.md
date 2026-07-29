@@ -8,7 +8,7 @@ Thank you for contributing to **Pookoo**! We maintain an extremely high engineer
 
 ## 1. Development Philosophy
 
-1. **Documentation & Specification First**: No feature code is written without an approved specification in `/specs/` and an updated entry in [TASKS.md](TASKS.md).
+1. **Documentation & Specification First**: No feature code is written without an updated entry in [TASKS.md](TASKS.md) and a corresponding ADR in [DECISIONS.md](DECISIONS.md) if the change is architectural.
 2. **Folders Over Packages**: Maintain all scanner submodules (`framework-detection`, `variable-discovery`, `usage-mapping`, `parser`, `rules`, `knowledge`, `reporter`) inside `packages/scanner/src/`. Do not create new packages in `packages/` without an approved ADR in [DECISIONS.md](DECISIONS.md).
 3. **Deterministic & Pure**: Code in `@pookoo/scanner` must be stateless, side-effect free, and 100% testable offline via Vitest.
 4. **Strict TypeScript**: No `any` types. Full type signatures required for all exports.

@@ -3,9 +3,8 @@ import { ScanResult } from "@pookoo/shared";
 export function formatMarkdownReport(result: ScanResult): string {
   const lines: string[] = [];
 
-  lines.push("# Pookoo Configuration Health Report\n");
-  lines.push(`- **Scanned Files**: ${result.scannedFilesCount}`);
-  lines.push(`- **Repository Health Score**: \`${result.healthScore}/100.0\`\n`);
+  lines.push("# Pookoo Configuration Report\n");
+  lines.push(`- **Scanned Files**: ${result.scannedFilesCount}\n`);
 
   lines.push("## Diagnostic Findings\n");
 

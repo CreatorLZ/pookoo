@@ -22,7 +22,7 @@ export function formatTerminalReport(result: ScanResult): string {
   lines.push(pc.bold(pc.cyan("  ║       Pookoo Configuration Report       ║")));
   lines.push(pc.bold(pc.cyan("  ╚════════════════════════════════════════╝")));
 
-  lines.push(`\n  ${pc.dim("Scanned")} ${pc.white(String(result.scannedFilesCount))} ${pc.dim("files")}  ·  ${pc.dim("Score")} ${formatScore(result.healthScore)}  ·  ${pc.dim("Findings")} ${pc.white(String(result.findings.length))}`);
+  lines.push(`\n  ${pc.dim("Scanned")} ${pc.white(String(result.scannedFilesCount))} ${pc.dim("files")}  ·  ${pc.dim("Findings")} ${pc.white(String(result.findings.length))}`);
 
   if (result.findings.length === 0) {
     lines.push(`\n  ${pc.green("✔")} ${pc.green("No configuration issues found")}\n`);
@@ -45,10 +45,10 @@ export function formatTerminalReport(result: ScanResult): string {
     const color = severityColor(sev);
     lines.push(pc.dim(`  ───── ${color(pc.bold(sev))}${pc.dim(" ─" + "─".repeat(50))}`));
 
-    if (bucket.every(f => f.ruleId === "NO_UNREFERENCED_ENV_VAR")) {
+    if (bucket.every(f => f.ruleId === "NO_STATIC_REFERENCE_FOUND")) {
       const keys = bucket.map(f => pc.white(f.targetKey));
       const finding = bucket[0];
-      lines.push(`    ${pc.dim("NO_UNREFERENCED_ENV_VAR ·")} ${bucket.length} ${pc.dim("unused variable" + (bucket.length > 1 ? "s" : ""))}`);
+      lines.push(`    ${pc.dim("NO_STATIC_REFERENCE_FOUND ·")} ${bucket.length} ${pc.dim("variable" + (bucket.length > 1 ? "s" : "") + " with no static reference")}`);
       lines.push(`    ${keys.join(", ")}`);
       lines.push(`    ${pc.dim(finding.explanation)}`);
       if (finding.sourceLocation) {
@@ -87,10 +87,4 @@ export function formatTerminalReport(result: ScanResult): string {
 
   lines.push("");
   return lines.join("\n");
-}
-
-function formatScore(score: number): string {
-  if (score >= 80) return pc.green(String(score) + "/100");
-  if (score >= 50) return pc.yellow(String(score) + "/100");
-  return pc.red(String(score) + "/100");
 }

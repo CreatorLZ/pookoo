@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "ConfigIQ - Intelligent Configuration Reasoning Engine monorepo",
+  "description": "Pookoo - Intelligent Configuration Reasoning Engine monorepo",
   "packageManager": "pnpm@9.0.0",
   "scripts": {
     "build": "turbo run build",

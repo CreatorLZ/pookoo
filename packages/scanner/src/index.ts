@@ -11,5 +11,8 @@ export * from "./rules/index";
 export * from "./reporter/terminal";
 export * from "./reporter/markdown";
 export * from "./reporter/json";
+export * from "./env-generator/index";
+export * from "./docs-generator/index";
 export * from "./config";
 export * from "./scan";
+

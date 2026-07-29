@@ -21,7 +21,23 @@ const DEFAULT_IGNORE = [
   "dist",
   "build",
   "coverage",
-  ".pnpm-store"
+  ".pnpm-store",
+  ".next",
+  ".nuxt",
+  ".svelte-kit",
+  ".output",
+  "out",
+  ".vercel",
+  ".netlify",
+  ".cache",
+  ".parcel-cache",
+  "__pycache__",
+  ".expo",
+  "test",
+  "tests",
+  "__tests__",
+  "fixtures",
+  "e2e"
 ];
 
 const MAX_FILE_SIZE_BYTES = 2 * 1024 * 1024; // 2 MB

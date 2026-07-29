@@ -2,7 +2,7 @@
   "name": "@pookoo/shared",
   "version": "0.1.0",
   "private": true,
-  "description": "ConfigIQ Shared Domain Types and Utilities",
+  "description": "Pookoo Shared Domain Types and Utilities",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": ["dist"],

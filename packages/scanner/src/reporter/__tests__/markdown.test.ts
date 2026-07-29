@@ -3,7 +3,7 @@ import { formatMarkdownReport } from "../markdown";
 import { ScanResult } from "@pookoo/shared";
 
 describe("formatMarkdownReport", () => {
-  it("includes health score and file count", () => {
+  it("includes file count but not health score", () => {
     const result: ScanResult = {
       knowledgeGraph: { nodes: [], edges: [] },
       findings: [],
@@ -12,8 +12,9 @@ describe("formatMarkdownReport", () => {
     };
 
     const output = formatMarkdownReport(result);
-    expect(output).toContain("100/100.0");
     expect(output).toContain("7");
+    expect(output).not.toContain("Health Score");
+    expect(output).not.toContain("/100.0");
   });
 
   it("shows note block when no findings", () => {

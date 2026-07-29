@@ -1,46 +1,33 @@
-# Pookoo Core Domain Glossary
+# Pookoo Domain Glossary
 
-This document serves as the canonical domain lexicon for **Pookoo**. Every specification, architectural diagram, codebase comment, rule definition, and documentation file must conform to the terminology established here.
-
----
-
-## Terminology Matrix
+All specifications, docs, and code must use these terms consistently.
 
 ### 1. Configuration Item (CI)
-* **Definition**: A discrete unit of configuration declaration identified within a repository. A Configuration Item can represent an environment variable (e.g., `DATABASE_URL`), a static file property (e.g., `server.port` in `application.properties`), a framework configuration key (e.g., `images.domains` in `next.config.js`), or a container deployment binding (e.g., `spec.template.spec.containers[].env`).
-* **Attributes**: `key`, `sourceLocation`, `defaultValuation`, `isRequired`, `typeSignature`, `inferredFramework`.
-* **Non-Definition**: A Configuration Item is NOT a secret value at runtime; it is the structural and semantic declaration of a configuration key.
+A single configuration declaration in a repository. Represents an environment variable (`DATABASE_URL`), a config file property (`server.port`), a framework key (`images.domains`), or a container binding. Has `key`, `sourceLocation`, `defaultValue`, `isRequired`, `typeSignature`, `inferredFramework`. Not a runtime secret value.
 
 ### 2. Scanner
-* **Definition**: The deterministic static analysis pipeline responsible for ingesting a repository filesystem, building an Abstract Syntax Tree (AST) representation, detecting frameworks, discovering Configuration Items, mapping code usages, building a Knowledge Graph, and executing Rule evaluation.
-* **Attributes**: Implemented as the root library `@pookoo/scanner`. Pure, stateless, headless, and zero-side-effect execution engine.
+The deterministic static analysis pipeline: ingests a repo filesystem, builds ASTs, detects frameworks, discovers Configuration Items, maps code usages, builds a Knowledge Graph, and runs Rules. Implemented as `@pookoo/scanner`. Pure, stateless, zero side effects.
 
 ### 3. Usage (Call-site Mapping)
-* **Definition**: An explicit reference or read operation in source code or infrastructure definitions targeting a specific Configuration Item.
-* **Attributes**: `filePath`, `lineNumber`, `columnRange`, `accessorPattern` (e.g., `process.env.FOO`, `os.Getenv("FOO")`, `config.get('FOO')`), `enclosingFunction`, `callType` (Direct, Fallback-wrapped, Dynamic Indexing).
+A reference or read operation in source code targeting a specific Configuration Item. Has `filePath`, `lineNumber`, `columnRange`, `accessorPattern` (e.g. `process.env.FOO`), `callType`.
 
 ### 4. Rule
-* **Definition**: A deterministic evaluation contract that inspects the Configuration Items, Usages, and Knowledge Graph to verify configuration health, security, completeness, freshness, and structural integrity.
-* **Examples**: `NO_UNREFERENCED_ENV_VAR` (dead config), `UNDOCUMENTED_REQUIRED_VAR`, `HARDCODED_DEFAULT_FALLBACK_RISK`, `CROSS_SERVICE_DRIFT`.
+A deterministic evaluation contract that inspects the Knowledge Graph to find configuration issues. Examples: `NO_STATIC_REFERENCE_FOUND`, `UNDOCUMENTED_REQUIRED_VAR`, `PUBLIC_PREFIX_SECRET_RISK`, `FALLBACK_INCONSISTENCY`.
 
 ### 5. Finding
-* **Definition**: An actionable, structured diagnostic emitted when a Rule condition fails or triggers an advisory warning during scanning.
-* **Attributes**: `id`, `ruleId`, `severity` (`CRITICAL`, `HIGH`, `MEDIUM`, `LOW`, `INFO`), `targetItem`, `message`, `explanation`, `remediation`, `codeSnippet`.
+An actionable diagnostic emitted when a Rule condition fails. Has `id`, `ruleId`, `severity` (CRITICAL/HIGH/MEDIUM/LOW/INFO), `targetKey`, `message`, `explanation`, `remediation`.
 
-### 6. Knowledge Graph (Configuration Graph)
-* **Definition**: A directed acyclic graph (DAG) representing the complete structural relationships between Configuration Items, source code call-sites, configuration schema definitions (`.env.example`, `schema.ts`), environment boundary declarations (`Dockerfile`, `docker-compose.yml`), and external service boundaries.
-* **Nodes**: `ConfigurationItem`, `File`, `CallSite`, `Schema`, `ServiceBoundary`.
-* **Edges**: `DECLARES`, `CONSUMES`, `VALIDATES_WITH`, `OVERRIDES`, `DEPENDS_ON`.
+### 6. Knowledge Graph
+A directed acyclic graph (DAG) of relationships between Configuration Items, call-sites, files, and schemas. Nodes: `ConfigurationItemNode`, `SourceFileNode`, `CallSiteUsageNode`, `SchemaNode`. Edges: `DECLARES`, `READS_FROM`, `VALIDATES`, `DEFINES_FALLBACK`.
 
 ### 7. Health Score
-* **Definition**: A calculated composite metric (0.0 to 100.0) quantifying the clarity, safety, documentation coverage, and structural hygiene of a repository's configuration ecosystem.
-* **Calculation Factors**: Ratio of documented-to-undocumented variables, proportion of dead configuration, usage safety (fallback safety), and severity-weighted Rule Findings.
+An internal, pending-calibration composite metric (0.0-100.0) quantifying configuration clarity, documentation coverage, and structural hygiene. Calculated from severity-weighted findings per ADR-006. Currently non-authoritative.
 
 ### 8. Framework Heuristic
-* **Definition**: A pattern-matching rule set applied during the repository loading phase to detect active frameworks (e.g., Next.js, Vite, Django, Spring Boot, Express, NestJS) and extract their implicit configuration behaviors (such as variable prefixing rules like `NEXT_PUBLIC_` or `VITE_`).
+Pattern-matching rules that detect active frameworks (Next.js, Vite) and extract their implicit configuration behavior (e.g. `NEXT_PUBLIC_` prefix rules).
 
 ### 9. Reporter
-* **Definition**: The output transformation module in `packages/scanner/src/reporter` responsible for rendering the Knowledge Graph, Health Score, and Findings into human-readable or machine-parsable formats (Terminal ANSI, Markdown, JSON, HTML).
+Output transformation module in `packages/scanner/src/reporter`. Renders the Knowledge Graph and Findings into Terminal ANSI, Markdown, or JSON formats.
 
 ### 10. Deterministic Analysis
-* **Definition**: Static code analysis that relies exclusively on AST parsing, formal grammar matching, and graph traversal. Guarantees 100% reproducible results for the same source tree without non-deterministic LLM hallucinations or external dynamic execution.
+Static code analysis using AST parsing, grammar matching, and graph traversal. 100% reproducible results for the same source tree. No LLM calls or non-deterministic heuristics.

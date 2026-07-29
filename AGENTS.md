@@ -56,7 +56,7 @@ flowchart TD
     Start[Agent Turn Started] --> Ingest[Ingest GLOSSARY, README, MANIFESTO, ARCHITECTURE, TASKS]
     Ingest --> CheckTask[Verify Target Task in TASKS.md & MILESTONES.md]
     CheckTask --> CodeEdit[Execute Single Granular Change in packages/ or apps/]
-    CodeEdit --> Verify[Run pnpm typecheck & pnpm test]
+    CodeEdit --> Verify[Run pnpm run build, pnpm typecheck & pnpm test]
     Verify --> DocsUpdate[Update TASKS.md & MILESTONES.md]
     DocsUpdate --> ADRCheck{Architectural Change Made?}
     ADRCheck -- Yes --> AddADR[Append ADR to DECISIONS.md]
@@ -70,3 +70,40 @@ flowchart TD
 - **Zero `any` Types**: All TypeScript code must be strictly typed without using `any`.
 - **Pure Functions**: Write side-effect-free functions in `@pookoo/scanner`.
 - **Vitest Testing Required**: Every new module inside `packages/scanner/src/` must include corresponding `.test.ts` files testing edge cases.
+
+---
+
+## 5. Local Development & Testing
+
+### Build & Link
+The CLI is globally linked via `npm link` from `apps/cli/`. This means the `pookoo` command is available system-wide.
+
+**After any code change**, you MUST rebuild before testing:
+```bash
+pnpm run build    # Recompiles all packages (shared → scanner → cli)
+```
+
+The global `pookoo` command automatically picks up the new build since it symlinks to `apps/cli/dist/index.js`.
+
+### If the global link is missing
+If `pookoo --version` fails, re-link:
+```bash
+cd apps/cli
+npm link
+```
+
+### Manual Testing Commands
+Test against any local project by pointing Pookoo at its directory:
+```bash
+pookoo init .              # Generate .env.example in current directory
+pookoo docs .              # Generate CONFIG_DOCS.md in current directory
+pookoo scan .              # Audit configuration and print report
+pookoo scan . --format json   # JSON output for programmatic use
+pookoo doctor              # Self-diagnostic check
+```
+
+Use `-o <path>` to control output file location:
+```bash
+pookoo init ./my-project -o ./my-project/.env.example
+pookoo docs ./my-project -o ./my-project/CONFIG_DOCS.md
+```
