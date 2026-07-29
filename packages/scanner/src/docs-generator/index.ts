@@ -147,8 +147,8 @@ export function generateConfigDocs(
     lines.push("| :--- | :---: | :---: | :--- |");
 
     for (const v of vars) {
-      const required = v.required ? "✓" : "—";
-      const scope = v.scope === "Client" ? "🌐 Client" : "🔒 Server";
+      const required = v.required ? "Yes" : "—";
+      const scope = v.scope === "Client" ? "Client" : "Server";
       const usedIn = v.usedIn.length > 0
         ? v.usedIn.slice(0, 3).map((f) => extractFilename(f)).join(", ") +
           (v.usedIn.length > 3 ? ` (+${v.usedIn.length - 3})` : "")

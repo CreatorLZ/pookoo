@@ -88,7 +88,7 @@ pnpm run format    # Format code
 
 ## Architectural Decisions
 
-Key choices (see [DECISIONS.md](DECISIONS.md) for full ADRs):
+Key choices:
 - **Static analysis first** -- All parsing and rule checks are deterministic. No AI/LLM.
 - **Library-first** -- `@pookoo/scanner` is the core; CLI is a thin wrapper.
 - **Graph-based knowledge model** -- Configuration entities and their relationships are modeled as a DAG.
