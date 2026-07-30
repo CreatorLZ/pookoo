@@ -1,46 +1,48 @@
 # Pookoo
 
-Point Pookoo at any codebase to understand, document, and audit its configuration.
-
-## What is Pookoo?
-
-Configuration is scattered across `.env` files, framework configs, container manifests, and `process.env` calls buried in code. Pookoo uses static AST analysis to find, document, and audit all of it.
-
-Pookoo is not a secret manager. It does not store, sync, or inject credentials.
+**Find broken, unused, and leaked environment variables before they break production.**
 
 ```bash
-# Generate .env.example from your codebase
-pookoo init ./my-project
-
-# Generate configuration reference docs
-pookoo docs ./my-project
-
-# Audit configuration for issues
-pookoo scan ./my-project
+npx pookoo scan .
 ```
 
-**`pookoo init`** scans your code and generates a `.env.example` with every discovered variable, grouped by category, with descriptions and source file hints. Values are blank by default -- real secrets are never exported. Use `--examples` for placeholder values.
+## What does it do?
 
-**`pookoo docs`** generates a markdown config reference -- categorized tables showing each variable, its scope (Client/Server), and where it's used. Output is deterministic (no timestamps).
+Your `.env` has variables left over from features you deleted. Your `.env.example` is out of date. Someone put a Stripe secret behind `NEXT_PUBLIC_` and nobody noticed.
+
+Pookoo reads your source code via AST parsing and catches all of this. It never runs your app and never sends data anywhere.
 
 **`pookoo scan`** finds variables with no static source references, inconsistent fallback defaults, and secrets exposed through client-side prefixes (while correctly ignoring publishable keys).
 
-Pookoo answers these questions for any codebase:
+**`pookoo init`** scans your code and generates a `.env.example` with every discovered variable, grouped by category, with descriptions and source file hints.
 
-- What variables does this project need?
-- Where is each variable consumed?
-- What breaks if I remove it?
-- Is a declared variable actually referenced in source files?
-- Are secrets exposed through client-side prefixes?
+**`pookoo docs`** generates a markdown config reference with categorized tables showing each variable, its scope (Client/Server), and where it's used.
 
-See [GLOSSARY.md](GLOSSARY.md) for domain terminology.
+```bash
+pookoo init ./my-project    # Generate .env.example from your codebase
+pookoo docs ./my-project    # Generate configuration reference docs
+pookoo scan ./my-project    # Audit configuration for issues
+pookoo doctor               # Sanity check
+```
+
+Supports **Next.js**, **Vite**, **Create React App**, **Node.js**, and plain TypeScript.
+
+Pookoo is not a secret manager. It does not store, sync, or inject credentials.
+
+## Install
+
+```bash
+npm install -g pookoo
+```
+
+See the [CLI README](apps/cli/README.md) for full command reference and flags.
 
 ## Repository Structure
 
 ```
 pookoo/
 ├── apps/cli/                  # Command-line interface
-│   └── README.md              # CLI usage docs
+│   └── README.md              # CLI usage and flags
 ├── packages/
 │   ├── scanner/src/           # Core analysis engine
 │   │   ├── framework-detection/
@@ -57,10 +59,6 @@ pookoo/
 └── LICENSE
 ```
 
-## Current Status
-
-Pookoo is at **v0.1.0** -- a working CLI with multi-format parsing, variable discovery, knowledge graph, rules engine, `.env.example` generation, config documentation generation, and 3 output reporters. Both `init` and `docs` require `--force` to overwrite existing files. See the [CLI README](apps/cli/README.md) for usage.
-
 ## Development Setup
 
 ### Prerequisites
@@ -68,29 +66,27 @@ Pookoo is at **v0.1.0** -- a working CLI with multi-format parsing, variable dis
 - **Node.js**: `>= 18.0.0`
 - **pnpm**: `>= 8.0.0`
 
-### Installation
+### Getting started
 
 ```bash
 git clone https://github.com/CreatorLZ/pookoo.git
 cd pookoo
 pnpm install
+pnpm run build
 ```
 
-### Common Commands
+### Common commands
 
 ```bash
 pnpm run build     # Build all packages
-pnpm run test      # Run tests
+pnpm run test      # Run tests (73 tests across scanner + CLI)
 pnpm run lint      # Lint workspace
-pnpm run format    # Format code
 ```
 
-## Architectural Decisions
+## Design decisions
 
-Key choices:
+- **Static analysis only** — All parsing and rule checks are deterministic. No AI, no heuristics.
+- **Library-first** — `@pookoo/scanner` is the core engine. The CLI is a thin wrapper around it.
+- **Graph-based model** — Configuration entities and their relationships are modeled as a directed graph.
 
-- **Static analysis first** -- All parsing and rule checks are deterministic. No AI/LLM.
-- **Library-first** -- `@pookoo/scanner` is the core; CLI is a thin wrapper.
-- **Graph-based knowledge model** -- Configuration entities and their relationships are modeled as a DAG.
-
-Before contributing, read [CONTRIBUTING.md](CONTRIBUTING.md) and `AGENTS.md`.
+Before contributing, read [CONTRIBUTING.md](CONTRIBUTING.md).
