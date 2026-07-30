@@ -1,12 +1,12 @@
-# @pookoo/cli
+# pookoo
 
 Command-line interface for Pookoo.
 
 ## Installation
 
 ```bash
-npm install -g @pookoo/cli
-pnpm add -g @pookoo/cli
+npm install -g pookoo
+pnpm add -g pookoo
 ```
 
 ### Local Development
