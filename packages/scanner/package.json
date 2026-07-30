@@ -1,8 +1,25 @@
 {
   "name": "@pookoo/scanner",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "private": false,
-  "description": "Pookoo Core Static Analysis and Graph Reasoning Engine",
+  "description": "Deterministic static analysis engine for environment variable discovery, AST parsing, knowledge graph construction, and configuration auditing.",
+  "keywords": [
+    "env",
+    "environment-variables",
+    "static-analysis",
+    "ast",
+    "configuration",
+    "knowledge-graph",
+    "scanner",
+    "dotenv",
+    "nextjs",
+    "vite",
+    "react",
+    "nodejs",
+    "typescript",
+    "audit",
+    "security"
+  ],
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
