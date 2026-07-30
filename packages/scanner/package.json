@@ -1,6 +1,6 @@
 {
   "name": "@pookoo/scanner",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": false,
   "description": "Pookoo Core Static Analysis and Graph Reasoning Engine",
   "main": "dist/index.js",
@@ -17,10 +17,10 @@
   "dependencies": {
     "@pookoo/shared": "workspace:*",
     "js-yaml": "^5.2.2",
-    "picocolors": "^1.1.1"
+    "picocolors": "^1.1.1",
+    "typescript": "^5.4.0"
   },
   "devDependencies": {
-    "typescript": "^5.4.0",
     "vitest": "^1.4.0"
   },
   "author": "CreatorLZ",
