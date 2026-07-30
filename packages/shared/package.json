@@ -1,6 +1,6 @@
 {
   "name": "@pookoo/shared",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": false,
   "description": "Pookoo Shared Domain Types and Utilities",
   "main": "dist/index.js",

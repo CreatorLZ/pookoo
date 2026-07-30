@@ -49,7 +49,7 @@ describe("formatTerminalReport", () => {
 
     const output = formatTerminalReport(result);
     expect(output).toContain("INFO");
-    expect(output).toContain("NO_STATIC_REFERENCE_FOUND");
+    expect(output).toContain("Unreferenced Variables");
     expect(output).toContain("OLD_KEY");
     expect(output).not.toContain("No configuration issues");
   });

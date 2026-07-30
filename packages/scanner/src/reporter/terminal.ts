@@ -23,18 +23,16 @@ function truncate(s: string, max = 80): string {
 export function formatTerminalReport(result: ScanResult): string {
   const lines: string[] = [];
 
-  lines.push(pc.bold(pc.cyan("\n  ╔════════════════════════════════════════╗")));
-  lines.push(pc.bold(pc.cyan("  ║       Pookoo Configuration Report       ║")));
-  lines.push(pc.bold(pc.cyan("  ╚════════════════════════════════════════╝")));
-
-  lines.push(
-    `\n  ${pc.dim("Scanned")} ${pc.white(String(result.scannedFilesCount))} ${pc.dim("files")}  ·  ${pc.dim("Findings")} ${pc.white(String(result.findings.length))}`
-  );
+  lines.push(pc.bold("Pookoo Configuration Report"));
+  lines.push(pc.dim("───────────────────────────"));
+  lines.push(`Scanned:  ${result.scannedFilesCount} files`);
+  lines.push(`Findings: ${result.findings.length} issues`);
 
   if (result.findings.length === 0) {
-    lines.push(`\n  ${pc.green("✔")} ${pc.green("No configuration issues found")}\n`);
+    lines.push(`\n${pc.green("✔")} No configuration issues found\n`);
     return lines.join("\n");
   }
+  lines.push("");
 
   const bySeverity: Record<string, Finding[]> = {};
   for (const f of result.findings) {
@@ -43,6 +41,7 @@ export function formatTerminalReport(result: ScanResult): string {
 
   const severityOrder = ["CRITICAL", "HIGH", "MEDIUM", "LOW", "INFO"];
   let first = true;
+
   for (const sev of severityOrder) {
     const bucket = bySeverity[sev];
     if (!bucket || bucket.length === 0) continue;
@@ -50,21 +49,13 @@ export function formatTerminalReport(result: ScanResult): string {
     first = false;
 
     const color = severityColor(sev);
-    lines.push(pc.dim(`  ───── ${color(pc.bold(sev))}${pc.dim(" ─" + "─".repeat(50))}`));
 
     if (bucket.every((f) => f.ruleId === "NO_STATIC_REFERENCE_FOUND")) {
-      const keys = bucket.map((f) => pc.white(f.targetKey));
-      const finding = bucket[0];
-      lines.push(
-        `    ${pc.dim("NO_STATIC_REFERENCE_FOUND ·")} ${bucket.length} ${pc.dim("variable" + (bucket.length > 1 ? "s" : "") + " with no static reference")}`
-      );
-      lines.push(`    ${keys.join(", ")}`);
-      lines.push(`    ${pc.dim(finding.explanation)}`);
-      if (finding.sourceLocation) {
-        lines.push(
-          `    ${pc.dim("Source:")} ${finding.sourceLocation.filePath}:${finding.sourceLocation.lineNumber}`
-        );
-      }
+      const keys = bucket.map((f) => f.targetKey).join(", ");
+      lines.push(`${color("●")} ${pc.bold(`[${sev}] Unreferenced Variables (${bucket.length})`)}`);
+      lines.push(`  ${pc.dim("These variables are declared in config but never statically referenced in your code.")}`);
+      lines.push(`  ${pc.dim("They might be unused, or consumed dynamically by scripts/frameworks.")}`);
+      lines.push(`  → ${keys}`);
       continue;
     }
 
@@ -73,28 +64,25 @@ export function formatTerminalReport(result: ScanResult): string {
       (grouped[f.targetKey] ??= []).push(f);
     }
 
-    for (const findings of Object.values(grouped)) {
+    for (const [key, findings] of Object.entries(grouped)) {
       const f = findings[0];
-      const tag = color(pc.bold(`[${f.severity}]`));
-      lines.push(`  ${tag} ${pc.bold(f.targetKey)}`);
-      if (findings.length > 1) lines.push(`    ${pc.dim("Occurrences:")} ${findings.length}`);
+      const countLabel = findings.length > 1 ? ` (${findings.length})` : "";
+      lines.push(`${color("●")} ${pc.bold(`[${sev}] ${key}`)}${pc.dim(countLabel)}`);
 
       if (f.ruleId === "FALLBACK_INCONSISTENCY") {
         const values = [...new Set(findings.map((x) => x.message))].map((v) => truncate(v, 80));
-        lines.push(`    ${pc.dim("Conflicting fallbacks:")}`);
-        for (const v of values) lines.push(`      ${v}`);
+        lines.push(`  ${pc.dim("Conflicting fallbacks:")}`);
+        for (const v of values) lines.push(`    - ${v}`);
       } else {
-        lines.push(`    ${truncate(f.message, 100)}`);
+        lines.push(`  ${pc.dim(truncate(f.message, 100))}`);
       }
 
       if (f.sourceLocation) {
-        lines.push(
-          `    ${pc.dim("File:")} ${f.sourceLocation.filePath}:${f.sourceLocation.lineNumber}`
-        );
+        lines.push(`  ${pc.dim(`File: ${f.sourceLocation.filePath}:${f.sourceLocation.lineNumber}`)}`);
       }
 
       const shortFix = f.remediation.length > 120 ? truncate(f.remediation, 120) : f.remediation;
-      lines.push(`    ${pc.dim("Fix:")} ${shortFix}`);
+      lines.push(`  ${pc.dim(`Fix:  ${shortFix}`)}\n`);
     }
   }
 

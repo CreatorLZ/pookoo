@@ -1,4 +1,5 @@
 import { ScanResult } from "@pookoo/shared";
+import pc from "picocolors";
 import { walkDirectory, FileWalkerOptions } from "./loader/walker";
 import { detectFrameworks } from "./framework-detection";
 import { discoverConfigurationItems, discoverConfigurationItemFiles } from "./variable-discovery";
@@ -22,40 +23,40 @@ export function scan(targetPath: string, options: Partial<ScanOptions> = {}): Sc
   };
 
   if (!options.silent) {
-    console.error("Scanning files...");
+    process.stderr.write(pc.dim("Scanning files...\n"));
   }
   const files = walkDirectory(targetPath, mergedOptions);
 
   if (!options.silent) {
-    console.error(`Detecting frameworks (${files.length} files)...`);
+    process.stderr.write(pc.dim(`Detecting frameworks (${files.length} files)...\n`));
   }
   const frameworks = detectFrameworks(files);
 
   if (!options.silent) {
-    console.error("Discovering configuration items...");
+    process.stderr.write(pc.dim("Discovering configuration items...\n"));
   }
   const items = discoverConfigurationItems(files, frameworks);
 
   if (!options.silent) {
-    console.error("Mapping source code usages...");
+    process.stderr.write(pc.dim("Mapping source code usages...\n"));
   }
   const usages = mapRepositoryUsages(files);
 
   if (!options.silent) {
-    console.error("Building knowledge graph...");
+    process.stderr.write(pc.dim("Building knowledge graph...\n"));
   }
   const extraDeclarations = discoverConfigurationItemFiles(files);
   const knowledgeGraph = buildKnowledgeGraph(items, usages, { extraDeclarations });
 
   if (!options.silent) {
-    console.error("Evaluating rules...");
+    process.stderr.write(pc.dim("Evaluating rules...\n"));
   }
   const { findings, healthScore } = evaluateRules(knowledgeGraph);
 
   const elapsed = Date.now() - startTime;
 
   if (!options.silent) {
-    console.error(`Scan completed in ${elapsed}ms`);
+    process.stderr.write(pc.dim(`Scan completed in ${elapsed}ms\n\n`));
   }
 
   return {
