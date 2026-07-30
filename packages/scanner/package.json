@@ -1,11 +1,13 @@
 {
   "name": "@pookoo/scanner",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
   "description": "Pookoo Core Static Analysis and Graph Reasoning Engine",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc",
     "dev": "tsc -w",
@@ -22,8 +24,3 @@
     "vitest": "^1.4.0"
   }
 }
-
-
-
-
-

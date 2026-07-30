@@ -2,11 +2,6 @@
 
 Point Pookoo at any codebase to understand, document, and audit its configuration.
 
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.4-blue.svg)](https://www.typescriptlang.org/)
-[![pnpm](https://img.shields.io/badge/pnpm-9.0-orange.svg)](https://pnpm.io/)
-[![Turborepo](https://img.shields.io/badge/Turborepo-1.13-ef4444.svg)](https://turbo.build/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-
 ## What is Pookoo?
 
 Configuration is scattered across `.env` files, framework configs, container manifests, and `process.env` calls buried in code. Pookoo uses static AST analysis to find, document, and audit all of it.
@@ -31,6 +26,7 @@ pookoo scan ./my-project
 **`pookoo scan`** finds variables with no static source references, inconsistent fallback defaults, and secrets exposed through client-side prefixes (while correctly ignoring publishable keys).
 
 Pookoo answers these questions for any codebase:
+
 - What variables does this project need?
 - Where is each variable consumed?
 - What breaks if I remove it?
@@ -68,10 +64,12 @@ Pookoo is at **v0.1.0** -- a working CLI with multi-format parsing, variable dis
 ## Development Setup
 
 ### Prerequisites
+
 - **Node.js**: `>= 18.0.0`
 - **pnpm**: `>= 8.0.0`
 
 ### Installation
+
 ```bash
 git clone https://github.com/CreatorLZ/pookoo.git
 cd pookoo
@@ -79,6 +77,7 @@ pnpm install
 ```
 
 ### Common Commands
+
 ```bash
 pnpm run build     # Build all packages
 pnpm run test      # Run tests
@@ -89,6 +88,7 @@ pnpm run format    # Format code
 ## Architectural Decisions
 
 Key choices:
+
 - **Static analysis first** -- All parsing and rule checks are deterministic. No AI/LLM.
 - **Library-first** -- `@pookoo/scanner` is the core; CLI is a thin wrapper.
 - **Graph-based knowledge model** -- Configuration entities and their relationships are modeled as a DAG.
