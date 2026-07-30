@@ -3,11 +3,16 @@ import pc from "picocolors";
 
 function severityColor(severity: string): (s: string) => string {
   switch (severity) {
-    case "CRITICAL": return pc.red;
-    case "HIGH": return pc.yellow;
-    case "MEDIUM": return pc.blue;
-    case "LOW": return pc.cyan;
-    default: return pc.dim;
+    case "CRITICAL":
+      return pc.red;
+    case "HIGH":
+      return pc.yellow;
+    case "MEDIUM":
+      return pc.blue;
+    case "LOW":
+      return pc.cyan;
+    default:
+      return pc.dim;
   }
 }
 
@@ -22,7 +27,9 @@ export function formatTerminalReport(result: ScanResult): string {
   lines.push(pc.bold(pc.cyan("  ║       Pookoo Configuration Report       ║")));
   lines.push(pc.bold(pc.cyan("  ╚════════════════════════════════════════╝")));
 
-  lines.push(`\n  ${pc.dim("Scanned")} ${pc.white(String(result.scannedFilesCount))} ${pc.dim("files")}  ·  ${pc.dim("Findings")} ${pc.white(String(result.findings.length))}`);
+  lines.push(
+    `\n  ${pc.dim("Scanned")} ${pc.white(String(result.scannedFilesCount))} ${pc.dim("files")}  ·  ${pc.dim("Findings")} ${pc.white(String(result.findings.length))}`
+  );
 
   if (result.findings.length === 0) {
     lines.push(`\n  ${pc.green("✔")} ${pc.green("No configuration issues found")}\n`);
@@ -45,14 +52,18 @@ export function formatTerminalReport(result: ScanResult): string {
     const color = severityColor(sev);
     lines.push(pc.dim(`  ───── ${color(pc.bold(sev))}${pc.dim(" ─" + "─".repeat(50))}`));
 
-    if (bucket.every(f => f.ruleId === "NO_STATIC_REFERENCE_FOUND")) {
-      const keys = bucket.map(f => pc.white(f.targetKey));
+    if (bucket.every((f) => f.ruleId === "NO_STATIC_REFERENCE_FOUND")) {
+      const keys = bucket.map((f) => pc.white(f.targetKey));
       const finding = bucket[0];
-      lines.push(`    ${pc.dim("NO_STATIC_REFERENCE_FOUND ·")} ${bucket.length} ${pc.dim("variable" + (bucket.length > 1 ? "s" : "") + " with no static reference")}`);
+      lines.push(
+        `    ${pc.dim("NO_STATIC_REFERENCE_FOUND ·")} ${bucket.length} ${pc.dim("variable" + (bucket.length > 1 ? "s" : "") + " with no static reference")}`
+      );
       lines.push(`    ${keys.join(", ")}`);
       lines.push(`    ${pc.dim(finding.explanation)}`);
       if (finding.sourceLocation) {
-        lines.push(`    ${pc.dim("Source:")} ${finding.sourceLocation.filePath}:${finding.sourceLocation.lineNumber}`);
+        lines.push(
+          `    ${pc.dim("Source:")} ${finding.sourceLocation.filePath}:${finding.sourceLocation.lineNumber}`
+        );
       }
       continue;
     }
@@ -69,7 +80,7 @@ export function formatTerminalReport(result: ScanResult): string {
       if (findings.length > 1) lines.push(`    ${pc.dim("Occurrences:")} ${findings.length}`);
 
       if (f.ruleId === "FALLBACK_INCONSISTENCY") {
-        const values = [...new Set(findings.map(x => x.message))].map(v => truncate(v, 80));
+        const values = [...new Set(findings.map((x) => x.message))].map((v) => truncate(v, 80));
         lines.push(`    ${pc.dim("Conflicting fallbacks:")}`);
         for (const v of values) lines.push(`      ${v}`);
       } else {
@@ -77,7 +88,9 @@ export function formatTerminalReport(result: ScanResult): string {
       }
 
       if (f.sourceLocation) {
-        lines.push(`    ${pc.dim("File:")} ${f.sourceLocation.filePath}:${f.sourceLocation.lineNumber}`);
+        lines.push(
+          `    ${pc.dim("File:")} ${f.sourceLocation.filePath}:${f.sourceLocation.lineNumber}`
+        );
       }
 
       const shortFix = f.remediation.length > 120 ? truncate(f.remediation, 120) : f.remediation;

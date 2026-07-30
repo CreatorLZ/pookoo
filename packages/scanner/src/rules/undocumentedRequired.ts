@@ -3,7 +3,8 @@ import { Finding, KnowledgeGraphData, RuleDefinition } from "@pookoo/shared";
 export const undocumentedRequiredRule: RuleDefinition = {
   id: "UNDOCUMENTED_REQUIRED_VAR",
   name: "Undocumented Required Variable",
-  description: "Detects required configuration variables that lack inline comments or schema documentation.",
+  description:
+    "Detects required configuration variables that lack inline comments or schema documentation.",
   defaultSeverity: "MEDIUM",
   evaluate(graph: KnowledgeGraphData): Finding[] {
     const findings: Finding[] = [];
@@ -20,7 +21,8 @@ export const undocumentedRequiredRule: RuleDefinition = {
           severity: "MEDIUM",
           targetKey: itemNode.label,
           message: `Required variable '${itemNode.label}' lacks documentation comments.`,
-          explanation: "Required variables without documentation increase onboarding friction for developers.",
+          explanation:
+            "Required variables without documentation increase onboarding friction for developers.",
           remediation: `Add an inline comment above '${itemNode.label}' explaining its purpose and required format.`
         });
       }
@@ -29,4 +31,3 @@ export const undocumentedRequiredRule: RuleDefinition = {
     return findings;
   }
 };
-

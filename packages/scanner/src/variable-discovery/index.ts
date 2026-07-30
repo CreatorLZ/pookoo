@@ -79,9 +79,7 @@ export function discoverConfigurationItems(
   return items;
 }
 
-export function discoverConfigurationItemFiles(
-  files: VirtualFile[]
-): Map<string, string[]> {
+export function discoverConfigurationItemFiles(files: VirtualFile[]): Map<string, string[]> {
   const declaredIn = new Map<string, string[]>();
 
   for (const file of files) {
@@ -108,4 +106,3 @@ export function discoverConfigurationItemFiles(
 
   return declaredIn;
 }
-

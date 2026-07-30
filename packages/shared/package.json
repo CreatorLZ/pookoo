@@ -1,11 +1,13 @@
 {
   "name": "@pookoo/shared",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
   "description": "Pookoo Shared Domain Types and Utilities",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc",
     "dev": "tsc -w",
@@ -13,14 +15,11 @@
   },
   "devDependencies": {
     "typescript": "^5.4.0"
+  },
+  "author": "CreatorLZ",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CreatorLZ/pookoo.git"
   }
 }
-
-
-
-
-
-
-
-
-

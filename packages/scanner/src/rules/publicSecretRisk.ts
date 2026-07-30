@@ -32,13 +32,14 @@ const KNOWN_SAFE_PATTERNS: RegExp[] = [
   /^(NEXT_PUBLIC_|VITE_|REACT_APP_)?INTERCOM_APP_ID$/,
   /^(NEXT_PUBLIC_|VITE_|REACT_APP_)?CRISP_WEBSITE_ID$/,
   /^(NEXT_PUBLIC_|VITE_|REACT_APP_)?CLOUDINARY_CLOUD_NAME$/,
-  /^(NEXT_PUBLIC_|VITE_|REACT_APP_)?MAPBOX_ACCESS_TOKEN$/,
+  /^(NEXT_PUBLIC_|VITE_|REACT_APP_)?MAPBOX_ACCESS_TOKEN$/
 ];
 
 export const publicSecretRiskRule: RuleDefinition = {
   id: "PUBLIC_PREFIX_SECRET_RISK",
   name: "Public Client Secret Leak Risk",
-  description: "Detects variables using public framework client prefixes that contain genuinely sensitive credential keywords.",
+  description:
+    "Detects variables using public framework client prefixes that contain genuinely sensitive credential keywords.",
   defaultSeverity: "CRITICAL",
   evaluate(graph: KnowledgeGraphData): Finding[] {
     const findings: Finding[] = [];
@@ -47,7 +48,10 @@ export const publicSecretRiskRule: RuleDefinition = {
     for (const itemNode of itemNodes) {
       const key = itemNode.label;
       const upperKey = key.toUpperCase();
-      const isPublicPrefix = upperKey.startsWith("NEXT_PUBLIC_") || upperKey.startsWith("VITE_") || upperKey.startsWith("REACT_APP_");
+      const isPublicPrefix =
+        upperKey.startsWith("NEXT_PUBLIC_") ||
+        upperKey.startsWith("VITE_") ||
+        upperKey.startsWith("REACT_APP_");
 
       if (!isPublicPrefix) continue;
 
@@ -69,7 +73,8 @@ export const publicSecretRiskRule: RuleDefinition = {
         severity: "CRITICAL",
         targetKey: key,
         message: `Public client variable '${key}' contains a sensitive keyword (${matchedKeywords.join(", ")}). This may expose private credentials to the browser.`,
-        explanation: "Public client framework prefixes expose variables to client-side browser bundles, creating credential leak risks.",
+        explanation:
+          "Public client framework prefixes expose variables to client-side browser bundles, creating credential leak risks.",
         remediation: `Rename '${key}' to a server-only variable without public client prefixes if it contains private credentials.`
       });
     }

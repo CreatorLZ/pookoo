@@ -56,4 +56,3 @@ describe("formatMarkdownReport", () => {
     expect(output).not.toContain("[!NOTE]");
   });
 });
-

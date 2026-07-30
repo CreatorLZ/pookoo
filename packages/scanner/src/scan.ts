@@ -65,4 +65,3 @@ export function scan(targetPath: string, options: Partial<ScanOptions> = {}): Sc
     scannedFilesCount: files.length
   };
 }
-

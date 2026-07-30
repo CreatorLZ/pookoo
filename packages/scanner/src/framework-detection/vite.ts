@@ -17,9 +17,7 @@ export function detectVite(files: VirtualFile[]): FrameworkMetadata | null {
     }
   }
 
-  const viteConfigFile = files.find(
-    (f) => f.relativePath.startsWith("vite.config.")
-  );
+  const viteConfigFile = files.find((f) => f.relativePath.startsWith("vite.config."));
   if (viteConfigFile) {
     isVite = true;
   }

@@ -47,4 +47,3 @@ export function parseJsonManifest(content: string, options: ParseJsonOptions): C
 
   return items;
 }
-

@@ -6,11 +6,11 @@
 export type Severity = "CRITICAL" | "HIGH" | "MEDIUM" | "LOW" | "INFO";
 
 export type CallType =
-  | "DIRECT_MEMBER"      // process.env.FOO
-  | "DESTRUCTURED"        // const { FOO } = process.env
-  | "FRAMEWORK_PUBLIC"    // import.meta.env.VITE_FOO
-  | "UTILITY_WRAPPER"     // config.get('FOO')
-  | "DYNAMIC_COMPUTED";   // process.env[computedKey]
+  | "DIRECT_MEMBER" // process.env.FOO
+  | "DESTRUCTURED" // const { FOO } = process.env
+  | "FRAMEWORK_PUBLIC" // import.meta.env.VITE_FOO
+  | "UTILITY_WRAPPER" // config.get('FOO')
+  | "DYNAMIC_COMPUTED"; // process.env[computedKey]
 
 export interface SourceLocation {
   filePath: string;

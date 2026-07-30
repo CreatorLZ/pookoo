@@ -103,4 +103,3 @@ export function buildKnowledgeGraph(
 
   return { nodes, edges };
 }
-

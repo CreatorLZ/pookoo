@@ -82,4 +82,3 @@ describe("buildKnowledgeGraph", () => {
     expect(callSiteNodes).toHaveLength(1);
   });
 });
-

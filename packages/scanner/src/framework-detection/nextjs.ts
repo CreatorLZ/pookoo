@@ -23,9 +23,7 @@ export function detectNextJs(files: VirtualFile[]): FrameworkMetadata | null {
     }
   }
 
-  const nextConfigFile = files.find(
-    (f) => f.relativePath.startsWith("next.config.")
-  );
+  const nextConfigFile = files.find((f) => f.relativePath.startsWith("next.config."));
   if (nextConfigFile) {
     isNext = true;
   }

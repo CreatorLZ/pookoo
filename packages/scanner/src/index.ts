@@ -15,4 +15,3 @@ export * from "./env-generator/index";
 export * from "./docs-generator/index";
 export * from "./config";
 export * from "./scan";
-

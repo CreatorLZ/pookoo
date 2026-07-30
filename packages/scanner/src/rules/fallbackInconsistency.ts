@@ -3,14 +3,18 @@ import { Finding, KnowledgeGraphData, RuleDefinition } from "@pookoo/shared";
 export const fallbackInconsistencyRule: RuleDefinition = {
   id: "FALLBACK_INCONSISTENCY",
   name: "Inconsistent Fallback Values",
-  description: "Detects configuration variables with different fallback default values across multiple call-sites.",
+  description:
+    "Detects configuration variables with different fallback default values across multiple call-sites.",
   defaultSeverity: "MEDIUM",
   evaluate(graph: KnowledgeGraphData): Finding[] {
     const findings: Finding[] = [];
 
     const callSiteNodes = graph.nodes.filter((n) => n.kind === "CallSite");
 
-    const fallbacksByKey = new Map<string, Map<string, { filePath: string; lineNumber: number }[]>>();
+    const fallbacksByKey = new Map<
+      string,
+      Map<string, { filePath: string; lineNumber: number }[]>
+    >();
 
     for (const node of callSiteNodes) {
       const itemKey = node.metadata.itemKey as string | undefined;
@@ -27,7 +31,8 @@ export const fallbackInconsistencyRule: RuleDefinition = {
         fallbackMap.set(fallbackValue, []);
       }
 
-      const loc = node.metadata.sourceLocation as { filePath: string; lineNumber: number } | undefined;
+      const loc = node.metadata.sourceLocation as
+        { filePath: string; lineNumber: number } | undefined;
       if (loc) {
         fallbackMap.get(fallbackValue)!.push({
           filePath: loc.filePath,
@@ -49,7 +54,8 @@ export const fallbackInconsistencyRule: RuleDefinition = {
           severity: "MEDIUM",
           targetKey: itemKey,
           message: `Variable '${itemKey}' has ${distinctCount} distinct fallback values across ${allLocations.length} call-sites.`,
-          explanation: "Inconsistent fallback values for the same variable create ambiguity about its actual default when the environment variable is unset.",
+          explanation:
+            "Inconsistent fallback values for the same variable create ambiguity about its actual default when the environment variable is unset.",
           remediation: `Standardize the fallback value for '${itemKey}' to a single consistent value across all call-sites.`,
           sourceLocation: {
             filePath: loc.filePath,
@@ -63,4 +69,3 @@ export const fallbackInconsistencyRule: RuleDefinition = {
     return findings;
   }
 };
-

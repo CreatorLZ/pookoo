@@ -18,4 +18,3 @@ export function mapRepositoryUsages(files: VirtualFile[]): Usage[] {
 
   return allUsages;
 }
-

@@ -17,7 +17,10 @@ services:
 
     expect(result).toHaveLength(3);
     expect(result[0]).toMatchObject({ key: "PORT", defaultValue: "8080", isRequired: false });
-    expect(result[1]).toMatchObject({ key: "DATABASE_URL", defaultValue: "postgres://db:5432/main" });
+    expect(result[1]).toMatchObject({
+      key: "DATABASE_URL",
+      defaultValue: "postgres://db:5432/main"
+    });
     expect(result[2]).toMatchObject({ key: "SECRET_KEY", isRequired: true });
     expect(result[2].defaultValue).toBeUndefined();
   });

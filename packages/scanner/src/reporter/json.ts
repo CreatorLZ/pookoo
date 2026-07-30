@@ -6,11 +6,15 @@ import { ScanResult, KnowledgeGraphNode } from "@pookoo/shared";
  */
 function redactNodeMetadata(node: KnowledgeGraphNode): KnowledgeGraphNode {
   if (node.kind === "ConfigurationItem") {
-    const { defaultValue, ...safeMetadata } = node.metadata as Record<string, unknown> & { defaultValue?: unknown };
+    const { defaultValue, ...safeMetadata } = node.metadata as Record<string, unknown> & {
+      defaultValue?: unknown;
+    };
     return { ...node, metadata: safeMetadata };
   }
   if (node.kind === "CallSite") {
-    const { fallbackValue, ...safeMetadata } = node.metadata as Record<string, unknown> & { fallbackValue?: unknown };
+    const { fallbackValue, ...safeMetadata } = node.metadata as Record<string, unknown> & {
+      fallbackValue?: unknown;
+    };
     return { ...node, metadata: safeMetadata };
   }
   return node;
@@ -22,8 +26,8 @@ export function formatJsonReport(result: ScanResult): string {
     ...publicFields,
     knowledgeGraph: {
       ...result.knowledgeGraph,
-      nodes: result.knowledgeGraph.nodes.map(redactNodeMetadata),
-    },
+      nodes: result.knowledgeGraph.nodes.map(redactNodeMetadata)
+    }
   };
   return JSON.stringify(safeResult, null, 2);
 }

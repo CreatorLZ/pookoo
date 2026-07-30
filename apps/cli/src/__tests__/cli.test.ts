@@ -23,7 +23,7 @@ function createFixture(): string {
       "DATABASE_URL=postgres://admin:s3cretP@ss@prod.db.example.com:5432/myapp",
       "STRIPE_SECRET_KEY=dummy_live_51SMMJBI92XLV9f6YRealProductionKey",
       "NEXT_PUBLIC_API_URL=https://api.example.com",
-      "JWT_SECRET=super-secret-jwt-signing-key-do-not-share",
+      "JWT_SECRET=super-secret-jwt-signing-key-do-not-share"
     ].join("\n"),
     "utf-8"
   );
@@ -35,7 +35,7 @@ function createFixture(): string {
     [
       'const dbUrl = process.env.DATABASE_URL || "postgres://localhost:5432/dev";',
       "const port = process.env.PORT || 3000;",
-      "const apiUrl = process.env.NEXT_PUBLIC_API_URL;",
+      "const apiUrl = process.env.NEXT_PUBLIC_API_URL;"
     ].join("\n"),
     "utf-8"
   );
@@ -72,7 +72,7 @@ describe("CLI execution: pookoo init", () => {
 
     execSync(`node "${CLI_PATH}" init "${fixtureDir}"`, {
       encoding: "utf-8",
-      timeout: 30000,
+      timeout: 30000
     });
 
     expect(fs.existsSync(outputFile)).toBe(true);
@@ -87,7 +87,7 @@ describe("CLI execution: pookoo init", () => {
 
     execSync(`node "${CLI_PATH}" init "${fixtureDir}"`, {
       encoding: "utf-8",
-      timeout: 30000,
+      timeout: 30000
     });
 
     const content = fs.readFileSync(outputFile, "utf-8");
@@ -115,7 +115,7 @@ describe("CLI execution: pookoo init", () => {
       execSync(`node "${CLI_PATH}" init "${fixtureDir}"`, {
         encoding: "utf-8",
         timeout: 30000,
-        stdio: "pipe",
+        stdio: "pipe"
       });
     } catch (err) {
       exitCode = (err as { status: number }).status;
@@ -130,7 +130,7 @@ describe("CLI execution: pookoo init", () => {
 
     execSync(`node "${CLI_PATH}" init "${fixtureDir}" --force`, {
       encoding: "utf-8",
-      timeout: 30000,
+      timeout: 30000
     });
 
     const content = fs.readFileSync(outputFile, "utf-8");
@@ -156,7 +156,7 @@ describe("CLI execution: pookoo docs", () => {
 
     execSync(`node "${CLI_PATH}" docs "${fixtureDir}"`, {
       encoding: "utf-8",
-      timeout: 30000,
+      timeout: 30000
     });
 
     expect(fs.existsSync(outputFile)).toBe(true);
@@ -170,7 +170,7 @@ describe("CLI execution: pookoo docs", () => {
 
     execSync(`node "${CLI_PATH}" docs "${fixtureDir}" --force`, {
       encoding: "utf-8",
-      timeout: 30000,
+      timeout: 30000
     });
 
     const content = fs.readFileSync(outputFile, "utf-8");
@@ -190,7 +190,7 @@ describe("CLI execution: pookoo docs", () => {
       execSync(`node "${CLI_PATH}" docs "${fixtureDir}"`, {
         encoding: "utf-8",
         timeout: 30000,
-        stdio: "pipe",
+        stdio: "pipe"
       });
     } catch (err) {
       exitCode = (err as { status: number }).status;
@@ -205,11 +205,11 @@ describe("CLI execution: pookoo docs", () => {
 
     execSync(`node "${CLI_PATH}" docs "${fixtureDir}" -o docs_run1.md --force`, {
       encoding: "utf-8",
-      timeout: 30000,
+      timeout: 30000
     });
     execSync(`node "${CLI_PATH}" docs "${fixtureDir}" -o docs_run2.md --force`, {
       encoding: "utf-8",
-      timeout: 30000,
+      timeout: 30000
     });
 
     const content1 = fs.readFileSync(out1, "utf-8");

@@ -18,6 +18,7 @@ Thank you for contributing to **Pookoo**! We maintain an extremely high engineer
 ## 2. Getting Started
 
 ### Local Setup
+
 ```bash
 # 1. Clone repo
 git clone https://github.com/CreatorLZ/pookoo.git
@@ -50,10 +51,11 @@ pnpm run test
 ## 4. Documentation & Domain Lexicon Rules
 
 All pull requests modifying docs or code must strictly use canonical domain terms defined in [GLOSSARY.md](GLOSSARY.md):
-- *Configuration Item* (not "env var object" or "config key string")
-- *Usage* (not "code reference location")
-- *Knowledge Graph* (not "dependency map")
-- *Rule* & *Finding* (not "lint alert" or "warning error")
-- *Health Score* (not "repo score")
+
+- _Configuration Item_ (not "env var object" or "config key string")
+- _Usage_ (not "code reference location")
+- _Knowledge Graph_ (not "dependency map")
+- _Rule_ & _Finding_ (not "lint alert" or "warning error")
+- _Health Score_ (not "repo score")
 
 For AI Agent specific operating protocols, see [AGENTS.md](AGENTS.md).

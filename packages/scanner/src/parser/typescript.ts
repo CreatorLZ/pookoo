@@ -7,14 +7,12 @@ export interface ParseTypeScriptOptions {
 
 export function parseTypeScriptSource(content: string, options: ParseTypeScriptOptions): Usage[] {
   const usages: Usage[] = [];
-  const sourceFile = ts.createSourceFile(
-    options.filePath,
-    content,
-    ts.ScriptTarget.Latest,
-    true
-  );
+  const sourceFile = ts.createSourceFile(options.filePath, content, ts.ScriptTarget.Latest, true);
 
-  function getLineAndColumn(pos: number, endPos: number): { lineNumber: number; columnRange: [number, number] } {
+  function getLineAndColumn(
+    pos: number,
+    endPos: number
+  ): { lineNumber: number; columnRange: [number, number] } {
     const { line, character } = sourceFile.getLineAndCharacterOfPosition(pos);
     const endChar = sourceFile.getLineAndCharacterOfPosition(endPos).character;
     return {
@@ -48,7 +46,10 @@ export function parseTypeScriptSource(content: string, options: ParseTypeScriptO
 
       if (isProcessEnv || isImportMetaEnv) {
         const itemKey = node.name.getText(sourceFile);
-        const { lineNumber, columnRange } = getLineAndColumn(node.getStart(sourceFile), node.getEnd());
+        const { lineNumber, columnRange } = getLineAndColumn(
+          node.getStart(sourceFile),
+          node.getEnd()
+        );
         const callType: CallType = isImportMetaEnv ? "FRAMEWORK_PUBLIC" : "DIRECT_MEMBER";
         const fallbackValue = extractFallback(node);
 
@@ -72,7 +73,10 @@ export function parseTypeScriptSource(content: string, options: ParseTypeScriptO
       const expressionText = node.expression.getText(sourceFile);
       if (expressionText === "process.env" || expressionText === "import.meta.env") {
         const argument = node.argumentExpression;
-        const { lineNumber, columnRange } = getLineAndColumn(node.getStart(sourceFile), node.getEnd());
+        const { lineNumber, columnRange } = getLineAndColumn(
+          node.getStart(sourceFile),
+          node.getEnd()
+        );
 
         if (ts.isStringLiteral(argument)) {
           const itemKey = argument.text;
@@ -116,7 +120,10 @@ export function parseTypeScriptSource(content: string, options: ParseTypeScriptO
                 ? element.propertyName.getText(sourceFile)
                 : element.name.getText(sourceFile);
 
-              const { lineNumber, columnRange } = getLineAndColumn(element.getStart(sourceFile), element.getEnd());
+              const { lineNumber, columnRange } = getLineAndColumn(
+                element.getStart(sourceFile),
+                element.getEnd()
+              );
               const fallbackValue = element.initializer
                 ? element.initializer.getText(sourceFile).replace(/^['"]|['"]$/g, "")
                 : undefined;
@@ -145,4 +152,3 @@ export function parseTypeScriptSource(content: string, options: ParseTypeScriptO
   visit(sourceFile);
   return usages;
 }
-

@@ -17,7 +17,7 @@ const IMPLICIT_VARIABLES = new Set([
   "HOSTNAME",
   "TZ",
   "CI",
-  "DEBUG",
+  "DEBUG"
 ]);
 
 /**
@@ -72,7 +72,7 @@ const SDK_PREFIXES = [
   "VITE_SENTRY_",
   "VITE_SUPABASE_",
   "VITE_GOOGLE_",
-  "REACT_APP_",
+  "REACT_APP_"
 ];
 
 function matchesSdkPrefix(key: string): string | undefined {
@@ -87,7 +87,8 @@ function matchesSdkPrefix(key: string): string | undefined {
 export const noStaticReferenceRule: RuleDefinition = {
   id: "NO_STATIC_REFERENCE_FOUND",
   name: "No Static Reference Found",
-  description: "Detects declared configuration variables for which no static source-code reference was found.",
+  description:
+    "Detects declared configuration variables for which no static source-code reference was found.",
   defaultSeverity: "INFO",
   evaluate(graph: KnowledgeGraphData): Finding[] {
     const findings: Finding[] = [];
@@ -123,7 +124,8 @@ export const noStaticReferenceRule: RuleDefinition = {
           severity: "INFO",
           targetKey: key,
           message: `No static source-code reference found for '${key}'.`,
-          explanation: "No direct process.env reference was found in scanned source files. The variable may still be consumed by dependencies, scripts, or runtime configuration.",
+          explanation:
+            "No direct process.env reference was found in scanned source files. The variable may still be consumed by dependencies, scripts, or runtime configuration.",
           remediation: `Investigate whether '${key}' is still required. Do not remove it based solely on this finding.`
         });
       }

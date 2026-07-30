@@ -10,7 +10,9 @@ export function formatMarkdownReport(result: ScanResult): string {
 
   if (result.findings.length === 0) {
     lines.push("> [!NOTE]");
-    lines.push("> No configuration issues detected. All variables are documented, referenced, and safe.\n");
+    lines.push(
+      "> No configuration issues detected. All variables are documented, referenced, and safe.\n"
+    );
     return lines.join("\n");
   }
 
@@ -18,7 +20,9 @@ export function formatMarkdownReport(result: ScanResult): string {
   lines.push("| :--- | :--- | :--- | :--- |");
 
   for (const finding of result.findings) {
-    lines.push(`| **${finding.severity}** | \`${finding.ruleId}\` | \`${finding.targetKey}\` | ${finding.message} |`);
+    lines.push(
+      `| **${finding.severity}** | \`${finding.ruleId}\` | \`${finding.targetKey}\` | ${finding.message} |`
+    );
   }
 
   lines.push("\n### Remediation Recommendations\n");
@@ -31,4 +35,3 @@ export function formatMarkdownReport(result: ScanResult): string {
 
   return lines.join("\n");
 }
-

@@ -54,11 +54,15 @@ export function categorizeFile(filePath: string): CategorizedFileType {
     return "MANIFEST";
   }
 
-  if (baseName === "docker-compose.yml" || baseName === "docker-compose.yaml" || baseName === "Dockerfile") {
+  if (
+    baseName === "docker-compose.yml" ||
+    baseName === "docker-compose.yaml" ||
+    baseName === "Dockerfile"
+  ) {
     return "CONTAINER";
   }
 
-  if (([".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs"].includes(ext))) {
+  if ([".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs"].includes(ext)) {
     return "SOURCE";
   }
 

@@ -55,4 +55,3 @@ export function evaluateRules(
 
   return { findings, healthScore };
 }
-

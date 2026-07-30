@@ -340,8 +340,18 @@ describe("SAFETY: fallback secrets never leak through any reporter", () => {
       }
     ],
     edges: [
-      { id: "edge:1", sourceId: "callsite:src/a.ts:10", targetId: "config:API_KEY", kind: "CONSUMES" },
-      { id: "edge:2", sourceId: "callsite:src/b.ts:20", targetId: "config:API_KEY", kind: "CONSUMES" }
+      {
+        id: "edge:1",
+        sourceId: "callsite:src/a.ts:10",
+        targetId: "config:API_KEY",
+        kind: "CONSUMES"
+      },
+      {
+        id: "edge:2",
+        sourceId: "callsite:src/b.ts:20",
+        targetId: "config:API_KEY",
+        kind: "CONSUMES"
+      }
     ]
   };
 
@@ -351,7 +361,9 @@ describe("SAFETY: fallback secrets never leak through any reporter", () => {
 
     expect(fallbackFindings.length).toBeGreaterThanOrEqual(1);
 
-    const allText = fallbackFindings.map((f) => `${f.message} ${f.explanation} ${f.remediation}`).join(" ");
+    const allText = fallbackFindings
+      .map((f) => `${f.message} ${f.explanation} ${f.remediation}`)
+      .join(" ");
     expect(allText).not.toContain(SECRET_A);
     expect(allText).not.toContain(SECRET_B);
   });

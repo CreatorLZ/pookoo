@@ -23,4 +23,3 @@ export function loadConfig(targetPath: string): ConfigIqConfig {
   }
   return {};
 }
-

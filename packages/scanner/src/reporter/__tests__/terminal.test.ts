@@ -54,4 +54,3 @@ describe("formatTerminalReport", () => {
     expect(output).not.toContain("No configuration issues");
   });
 });
-
