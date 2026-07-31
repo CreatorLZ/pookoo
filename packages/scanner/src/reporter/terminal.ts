@@ -29,7 +29,9 @@ export function formatTerminalReport(result: ScanResult): string {
   lines.push(`Findings: ${result.findings.length} issues`);
 
   if (result.findings.length === 0) {
-    lines.push(`\n${pc.green("✔")} No configuration issues found\n`);
+    const varCount = result.knowledgeGraph.nodes.filter(n => n.kind === "ConfigurationItem").length;
+    const varText = varCount === 1 ? "environment variable" : "environment variables";
+    lines.push(`\n${pc.green("✔")} No issues found across ${varCount} ${varText}\n`);
     return lines.join("\n");
   }
   lines.push("");

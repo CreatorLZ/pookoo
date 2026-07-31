@@ -22,38 +22,44 @@ export function scan(targetPath: string, options: Partial<ScanOptions> = {}): Sc
     ignorePatterns: [...(options.ignorePatterns || []), ...(config.ignorePatterns || [])]
   };
 
-  if (!options.silent) {
-    process.stderr.write(pc.dim("Scanning files...\n"));
-  }
+  let currentLog = "";
+  const logProgress = (msg: string) => {
+    if (options.silent) return;
+    if (!process.stderr.isTTY) {
+      if (msg) process.stderr.write(msg + "\n");
+      return;
+    }
+    if (currentLog) {
+      process.stderr.write("\r\x1b[K"); // Clear the current line
+    }
+    currentLog = msg;
+    if (msg) {
+      process.stderr.write(pc.dim(msg));
+    }
+  };
+
+  logProgress("Scanning files...");
   const files = walkDirectory(targetPath, mergedOptions);
 
-  if (!options.silent) {
-    process.stderr.write(pc.dim(`Detecting frameworks (${files.length} files)...\n`));
-  }
+  logProgress(`Detecting frameworks (${files.length} files)...`);
   const frameworks = detectFrameworks(files);
 
-  if (!options.silent) {
-    process.stderr.write(pc.dim("Discovering configuration items...\n"));
-  }
+  logProgress("Discovering configuration items...");
   const items = discoverConfigurationItems(files, frameworks);
 
-  if (!options.silent) {
-    process.stderr.write(pc.dim("Mapping source code usages...\n"));
-  }
+  logProgress("Mapping source code usages...");
   const usages = mapRepositoryUsages(files);
 
-  if (!options.silent) {
-    process.stderr.write(pc.dim("Building knowledge graph...\n"));
-  }
+  logProgress("Building knowledge graph...");
   const extraDeclarations = discoverConfigurationItemFiles(files);
   const knowledgeGraph = buildKnowledgeGraph(items, usages, { extraDeclarations });
 
-  if (!options.silent) {
-    process.stderr.write(pc.dim("Evaluating rules...\n"));
-  }
+  logProgress("Evaluating rules...");
   const { findings, healthScore } = evaluateRules(knowledgeGraph);
 
   const elapsed = Date.now() - startTime;
+
+  logProgress(""); // Clear the final progress message
 
   if (!options.silent) {
     process.stderr.write(pc.dim(`Scan completed in ${elapsed}ms\n\n`));

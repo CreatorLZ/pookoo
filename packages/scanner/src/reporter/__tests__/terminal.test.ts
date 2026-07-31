@@ -26,7 +26,7 @@ describe("formatTerminalReport", () => {
     };
 
     const output = formatTerminalReport(result);
-    expect(output).toContain("No configuration issues");
+    expect(output).toContain("No issues found across 0 environment variables");
   });
 
   it("lists findings with severity badges when findings exist", () => {
