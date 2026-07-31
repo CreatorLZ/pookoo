@@ -32,6 +32,17 @@ npx pookoo scan .
 
 ## Commands
 
+### Quick Reference
+
+```bash
+pookoo init .      # Generate .env.example from your codebase
+pookoo docs .      # Generate configuration reference docs
+pookoo scan .      # Audit configuration for issues
+pookoo doctor      # Sanity check
+```
+
+---
+
 ### `pookoo scan` - Audit your configuration
 
 Scans your repository and reports configuration issues categorized by severity.
