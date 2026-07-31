@@ -1,6 +1,6 @@
 # pookoo
 
-**Find broken, unused, and leaked environment variables before they break production.**
+Find broken, unused, and leaked environment variables before they break production.
 
 Pookoo scans your JS/TS project and tells you which env vars are dead, which are missing from `.env.example`, and which secrets you're accidentally shipping to the browser. It scans your source code via AST parsing, it never runs your app, never sends data anywhere, and always produces the same output for the same input. It can also generate a `.env.example` file from your source code and a `CONFIG_DOCS.md` file with a table of all environment variables in your project.
 
@@ -32,7 +32,7 @@ npx pookoo scan .
 
 ## Commands
 
-### `pookoo scan` — Audit your configuration
+### `pookoo scan` - Audit your configuration
 
 Scans your repository and reports configuration issues categorized by severity.
 
@@ -60,7 +60,7 @@ pookoo scan . --fail-on HIGH               # Exit 1 in CI if HIGH issues found
 
 ---
 
-### `pookoo init` — Generate `.env.example`
+### `pookoo init` - Generate `.env.example`
 
 Analyzes your source code and generates a complete `.env.example` file from what your project actually uses.
 
@@ -82,7 +82,7 @@ pookoo init . -o path/to/.env.example  # Custom output path
 
 ---
 
-### `pookoo docs` — Generate configuration reference
+### `pookoo docs` - Generate configuration reference
 
 Generates a `CONFIG_DOCS.md` with a table of every environment variable your project uses, where it's referenced, and whether it's required.
 
@@ -101,7 +101,7 @@ pookoo docs . -o docs/env-reference.md  # Custom output path
 
 ---
 
-### `pookoo doctor` — Sanity check
+### `pookoo doctor` - Sanity check
 
 Makes sure Node.js and your project structure look right before scanning.
 
@@ -115,13 +115,5 @@ pookoo doctor
 
 | Code | Meaning                                                                         |
 | :--- | :------------------------------------------------------------------------------ |
-| `0`  | Success — no issues above the `--fail-on` threshold                             |
+| `0`  | Success - no issues above the `--fail-on` threshold                             |
 | `1`  | Issues found above threshold, file conflict without `--force`, or runtime error |
-
----
-
-## Links
-
-- **npm:** [npmjs.com/package/pookoo](https://www.npmjs.com/package/pookoo)
-- **GitHub:** [github.com/CreatorLZ/pookoo](https://github.com/CreatorLZ/pookoo)
-- **Scanner API:** [@pookoo/scanner](https://www.npmjs.com/package/@pookoo/scanner)

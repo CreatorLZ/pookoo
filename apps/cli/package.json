@@ -1,6 +1,6 @@
 {
   "name": "pookoo",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "private": false,
   "description": "Deterministic CLI to audit, document, and manage environment variables. Detects unused, undocumented, and misconfigured config vars across Next.js, Vite, React, and Node.js projects.",
   "keywords": [
