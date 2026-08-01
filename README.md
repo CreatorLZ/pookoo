@@ -69,7 +69,6 @@ pookoo/
 ### Getting started
 
 ```bash
-git clone https://github.com/CreatorLZ/pookoo.git
 cd pookoo
 pnpm install
 pnpm run build
