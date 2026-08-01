@@ -20,8 +20,7 @@ Thank you for contributing to **Pookoo**! We maintain an extremely high engineer
 ### Local Setup
 
 ```bash
-# 1. Clone repo
-git clone https://github.com/CreatorLZ/pookoo.git
+# 1.
 cd pookoo
 
 # 2. Install dependencies via pnpm
