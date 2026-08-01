@@ -57,4 +57,3 @@ All pull requests modifying docs or code must strictly use canonical domain term
 - _Rule_ & _Finding_ (not "lint alert" or "warning error")
 - _Health Score_ (not "repo score")
 
-For AI Agent specific operating protocols, see [AGENTS.md](AGENTS.md).
