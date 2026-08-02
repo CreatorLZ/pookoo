@@ -1,6 +1,6 @@
 {
   "name": "@pookoo/scanner",
-  "version": "0.1.6",
+  "version": "0.1.8",
   "private": false,
   "description": "Deterministic static analysis engine for environment variable discovery, AST parsing, knowledge graph construction, and configuration auditing.",
   "keywords": [
