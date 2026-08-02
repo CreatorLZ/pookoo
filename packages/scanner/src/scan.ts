@@ -55,7 +55,10 @@ export function scan(targetPath: string, options: Partial<ScanOptions> = {}): Sc
   const knowledgeGraph = buildKnowledgeGraph(items, usages, { extraDeclarations });
 
   logProgress("Evaluating rules...");
-  const { findings, healthScore } = evaluateRules(knowledgeGraph);
+  const { findings, healthScore } = evaluateRules(knowledgeGraph, undefined, {
+    allowlist: config.allowlist,
+    severityOverrides: config.severityOverrides
+  });
 
   const elapsed = Date.now() - startTime;
 

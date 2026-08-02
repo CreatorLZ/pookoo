@@ -40,16 +40,40 @@ export function calculateHealthScore(findings: Finding[]): number {
   return Math.round(score * 10) / 10;
 }
 
+export interface RuleEvaluationOptions {
+  allowlist?: string[];
+  severityOverrides?: Record<string, string>;
+}
+
+function isValidSeverity(severity: string): severity is Severity {
+  return ["CRITICAL", "HIGH", "MEDIUM", "LOW", "INFO"].includes(severity);
+}
+
 export function evaluateRules(
   graph: KnowledgeGraphData,
-  rules: RuleDefinition[] = BUILTIN_RULES
+  rules: RuleDefinition[] = BUILTIN_RULES,
+  options: RuleEvaluationOptions = {}
 ): { findings: Finding[]; healthScore: number } {
-  const findings: Finding[] = [];
+  const allFindings: Finding[] = [];
 
   for (const rule of rules) {
     const ruleFindings = rule.evaluate(graph);
-    findings.push(...ruleFindings);
+    allFindings.push(...ruleFindings);
   }
+
+  // 1. Filter out allowlisted variables
+  const filtered = options.allowlist?.length
+    ? allFindings.filter((f) => !options.allowlist!.includes(f.targetKey))
+    : allFindings;
+
+  // 2. Apply severity overrides
+  const findings = filtered.map((f) => {
+    const override = options.severityOverrides?.[f.ruleId];
+    if (override && isValidSeverity(override)) {
+      return { ...f, severity: override };
+    }
+    return f;
+  });
 
   const healthScore = calculateHealthScore(findings);
 

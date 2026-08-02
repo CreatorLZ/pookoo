@@ -238,6 +238,84 @@ describe("evaluateRules", () => {
     const { findings } = evaluateRules(graph);
     expect(findings.filter((f) => f.ruleId === "FALLBACK_INCONSISTENCY")).toHaveLength(0);
   });
+
+  it("filters out findings for allowlisted variables", () => {
+    const graph: KnowledgeGraphData = {
+      nodes: [
+        {
+          id: "config:UNUSED_KEY",
+          kind: "ConfigurationItem",
+          label: "UNUSED_KEY",
+          metadata: { isRequired: false }
+        }
+      ],
+      edges: []
+    };
+
+    const { findings } = evaluateRules(graph, undefined, {
+      allowlist: ["UNUSED_KEY"]
+    });
+    expect(findings).toHaveLength(0);
+  });
+
+  it("applies severityOverrides correctly", () => {
+    const graph: KnowledgeGraphData = {
+      nodes: [
+        {
+          id: "config:NEXT_PUBLIC_STRIPE_SECRET_KEY",
+          kind: "ConfigurationItem",
+          label: "NEXT_PUBLIC_STRIPE_SECRET_KEY",
+          metadata: { isRequired: true }
+        }
+      ],
+      edges: [
+        {
+          id: "edge:consumes:1",
+          sourceId: "callsite:1",
+          targetId: "config:NEXT_PUBLIC_STRIPE_SECRET_KEY",
+          kind: "CONSUMES"
+        }
+      ]
+    };
+
+    const { findings, healthScore } = evaluateRules(graph, undefined, {
+      severityOverrides: {
+        PUBLIC_PREFIX_SECRET_RISK: "LOW"
+      }
+    });
+
+    const secretFinding = findings.find((f) => f.ruleId === "PUBLIC_PREFIX_SECRET_RISK");
+    expect(secretFinding).toBeDefined();
+    expect(secretFinding?.severity).toBe("LOW");
+
+    // The health score should be better than when it was CRITICAL
+    // CRITICAL is 20, LOW is 2. So the penalty for this rule will be 2 instead of 20.
+    const { healthScore: originalScore } = evaluateRules(graph);
+    expect(healthScore).toBeGreaterThan(originalScore);
+  });
+
+  it("ignores invalid severity string in severityOverrides", () => {
+    const graph: KnowledgeGraphData = {
+      nodes: [
+        {
+          id: "config:UNUSED_KEY",
+          kind: "ConfigurationItem",
+          label: "UNUSED_KEY",
+          metadata: { isRequired: false }
+        }
+      ],
+      edges: []
+    };
+
+    const { findings } = evaluateRules(graph, undefined, {
+      severityOverrides: {
+        NO_STATIC_REFERENCE_FOUND: "SUPER_CRITICAL"
+      }
+    });
+    
+    // Should fallback to default severity which is INFO
+    expect(findings[0].severity).toBe("INFO");
+  });
 });
 
 describe("calculateHealthScore", () => {
