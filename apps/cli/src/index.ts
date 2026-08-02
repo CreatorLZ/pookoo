@@ -34,10 +34,14 @@ function resolveOutputPath(
 
 const program = new Command();
 
+const pkgPath = path.join(__dirname, "../package.json");
+const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf-8"));
+const CLI_VERSION = pkg.version as string;
+
 program
   .name("pookoo")
   .description("Pookoo - Intelligent Configuration Reasoning Engine")
-  .version("0.1.0");
+  .version(CLI_VERSION);
 
 program
   .command("scan [targetPath]")
@@ -194,7 +198,8 @@ program
 
         const docsResult = generateConfigDocs(result, {
           title: options?.title || "Configuration Reference",
-          includeSummary: options?.summary !== false
+          includeSummary: options?.summary !== false,
+          cliVersion: CLI_VERSION
         });
 
         fs.writeFileSync(outputPath, docsResult.content, "utf-8");
