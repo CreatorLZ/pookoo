@@ -78,6 +78,7 @@ Analyzes your source code and generates a complete `.env.example` file from what
 ```bash
 pookoo init .                    # Generate .env.example
 pookoo init . --examples         # Include placeholder example values
+pookoo init . --group-by-dir     # Group variables by the directory that declares them
 pookoo init . --force            # Overwrite if file already exists
 pookoo init . -o path/to/.env.example  # Custom output path
 ```
@@ -87,9 +88,12 @@ pookoo init . -o path/to/.env.example  # Custom output path
 | `-o, --output <file>` | Output path                        | `<targetPath>/.env.example` |
 | `--force`             | Overwrite existing file            | off                         |
 | `--examples`          | Include placeholder example values | off                         |
+| `--group-by-dir`      | Group variables by their declaring directory | category groups |
 | `--no-comments`       | Omit descriptive comments          | comments included           |
 | `--no-sources`        | Omit source file usage hints       | sources included            |
 | `--no-groups`         | Don't group variables by category  | grouped                     |
+
+> `--group-by-dir` is monorepo-aware: each directory section lists every variable declared there, so a variable declared in several files appears in each of those directories' sections (with a `# Declared in:` line showing the full cross-declaration). Consumed-but-undeclared variables appear in an `Undeclared` section grouped by where they're mostly used. Commented-out assignments and credential-bearing URIs are never copied into the generated file, even when they appear in `.env` comments.
 
 ---
 

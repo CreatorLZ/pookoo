@@ -1,6 +1,6 @@
 {
   "name": "pookoo",
-  "version": "0.1.8",
+  "version": "0.2.0",
   "private": false,
   "description": "Deterministic CLI to audit, document, and manage environment variables. Detects unused, undocumented, and misconfigured config vars across Next.js, Vite, React, and Node.js projects.",
   "keywords": [
@@ -34,10 +34,11 @@
   ],
   "scripts": {
     "build": "tsc",
+    "clean": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true});require('fs').rmSync('tsconfig.tsbuildinfo',{force:true})\"",
     "dev": "tsc -w",
     "test": "vitest run --passWithNoTests",
     "lint": "eslint src/",
-    "prepublishOnly": "pnpm build"
+    "prepublishOnly": "pnpm clean && pnpm build"
   },
   "dependencies": {
     "@pookoo/scanner": "workspace:*",

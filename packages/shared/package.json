@@ -1,6 +1,6 @@
 {
   "name": "@pookoo/shared",
-  "version": "0.1.8",
+  "version": "0.2.0",
   "private": false,
   "description": "Pookoo Shared Domain Types and Utilities",
   "main": "dist/index.js",
@@ -10,6 +10,8 @@
   ],
   "scripts": {
     "build": "tsc",
+    "clean": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true});require('fs').rmSync('tsconfig.tsbuildinfo',{force:true})\"",
+    "prepublishOnly": "pnpm clean && pnpm build",
     "dev": "tsc -w",
     "lint": "eslint src/"
   },

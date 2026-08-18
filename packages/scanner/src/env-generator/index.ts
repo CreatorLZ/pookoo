@@ -7,6 +7,8 @@ export interface EnvGeneratorOptions {
   includeSourceHints?: boolean;
   /** Group variables by framework/SDK prefix (e.g., Clerk, Stripe, Database). Default: true */
   groupByCategory?: boolean;
+  /** Group variables by the directory that declares them (monorepo-aware). Overrides groupByCategory. Default: false */
+  groupByDirectory?: boolean;
   /** Add placeholder example values like "your-api-key-here". Default: false */
   includeExampleValues?: boolean;
 }
@@ -16,6 +18,7 @@ interface EnvVariable {
   defaultValue?: string;
   comment?: string;
   usedInFiles: string[];
+  declaredInFiles: string[];
   category: string;
   isPublic: boolean;
 }
@@ -92,6 +95,7 @@ export function generateEnvExample(result: ScanResult, options: EnvGeneratorOpti
     includeDescriptions = true,
     includeSourceHints = true,
     groupByCategory = true,
+    groupByDirectory = false,
     includeExampleValues = false
   } = options;
 
@@ -104,19 +108,62 @@ export function generateEnvExample(result: ScanResult, options: EnvGeneratorOpti
   lines.push("# ════════════════════════════════════════════════════════════════");
   lines.push("");
 
-  if (groupByCategory) {
+  if (groupByDirectory) {
+    const sections = groupVariablesByDirectory(variables);
+
+    for (const section of sections) {
+      lines.push(`# ─────────────────────────────────────`);
+      lines.push(`# → ${section.title}`);
+      lines.push(`# ─────────────────────────────────────`);
+      lines.push("");
+
+      if (section.undeclaredSubGroups) {
+        for (const [dir, vars] of [...section.undeclaredSubGroups.entries()].sort()) {
+          const sortedVars = [...vars].sort((a, b) => a.key.localeCompare(b.key));
+          if (dir !== "") {
+            lines.push(`# ${displayDirectory(dir)}`);
+          }
+          for (const v of sortedVars) {
+            appendVariable(lines, v, {
+              includeDescriptions,
+              includeSourceHints,
+              includeExampleValues,
+              includeDeclaredIn: true
+            });
+          }
+          lines.push("");
+        }
+      } else if (section.variables) {
+        const sortedVars = [...section.variables].sort((a, b) => a.key.localeCompare(b.key));
+        for (const v of sortedVars) {
+          appendVariable(lines, v, {
+            includeDescriptions,
+            includeSourceHints,
+            includeExampleValues,
+            includeDeclaredIn: true
+          });
+        }
+        lines.push("");
+      }
+    }
+  } else if (groupByCategory) {
     const grouped = groupVariablesByCategory(variables);
     const categoryOrder = Array.from(grouped.keys()).sort();
 
     for (const category of categoryOrder) {
       const vars = grouped.get(category)!;
-      lines.push(`# ──────────────────────────────────────`);
+      lines.push(`# ─────────────────────────────────────`);
       lines.push(`# ${category}`);
-      lines.push(`# ──────────────────────────────────────`);
+      lines.push(`# ─────────────────────────────────────`);
       lines.push("");
 
       for (const v of vars) {
-        appendVariable(lines, v, { includeDescriptions, includeSourceHints, includeExampleValues });
+        appendVariable(lines, v, {
+          includeDescriptions,
+          includeSourceHints,
+          includeExampleValues,
+          includeDeclaredIn: false
+        });
       }
 
       lines.push("");
@@ -124,7 +171,12 @@ export function generateEnvExample(result: ScanResult, options: EnvGeneratorOpti
   } else {
     const sorted = [...variables].sort((a, b) => a.key.localeCompare(b.key));
     for (const v of sorted) {
-      appendVariable(lines, v, { includeDescriptions, includeSourceHints, includeExampleValues });
+      appendVariable(lines, v, {
+        includeDescriptions,
+        includeSourceHints,
+        includeExampleValues,
+        includeDeclaredIn: false
+      });
     }
   }
 
@@ -133,18 +185,42 @@ export function generateEnvExample(result: ScanResult, options: EnvGeneratorOpti
 
 function collectVariables(result: ScanResult): EnvVariable[] {
   const variableMap = new Map<string, EnvVariable>();
-  const { nodes } = result.knowledgeGraph;
+  const { nodes, edges } = result.knowledgeGraph;
+
+  // Map each variable to every file that declares it via DECLARES edges.
+  // .env.example files are templates, not real declarations, so they are excluded.
+  const declaredByConfig = new Map<string, string[]>();
+  for (const edge of edges) {
+    if (edge.kind !== "DECLARES") continue;
+    const sourceMatch = /^file:(.+)$/.exec(edge.sourceId);
+    const targetMatch = /^config:(.+)$/.exec(edge.targetId);
+    if (!sourceMatch || !targetMatch) continue;
+    const filePath = sourceMatch[1];
+    if (filePath.includes(".env.example")) continue;
+    const key = targetMatch[1];
+    const list = declaredByConfig.get(key) || [];
+    if (!list.includes(filePath)) list.push(filePath);
+    declaredByConfig.set(key, list);
+  }
+
+  const collectDeclaredIn = (key: string, primaryFile?: string): string[] => {
+    const all = new Set(declaredByConfig.get(key) || []);
+    if (primaryFile && !primaryFile.includes(".env.example")) all.add(primaryFile);
+    return [...all].sort();
+  };
 
   // Collect declared configuration items
   const configNodes = nodes.filter((n) => n.kind === "ConfigurationItem");
   for (const node of configNodes) {
     const key = node.label;
     const meta = node.metadata;
+    const loc = meta.sourceLocation as { filePath?: string } | undefined;
     variableMap.set(key, {
       key,
       defaultValue: meta.defaultValue as string | undefined,
       comment: meta.rawComment as string | undefined,
       usedInFiles: [],
+      declaredInFiles: collectDeclaredIn(key, loc?.filePath),
       category: categorizeVariable(key),
       isPublic: /^(NEXT_PUBLIC_|VITE_|REACT_APP_)/.test(key)
     });
@@ -160,20 +236,20 @@ function collectVariables(result: ScanResult): EnvVariable[] {
       { filePath: string; lineNumber: number } | undefined;
     if (!loc) continue;
 
+    const fileRef = `${loc.filePath}:${loc.lineNumber}`;
     const existing = variableMap.get(itemKey);
     if (existing) {
-      const fileRef = `${loc.filePath}:${loc.lineNumber}`;
       if (!existing.usedInFiles.includes(fileRef)) {
         existing.usedInFiles.push(fileRef);
       }
     } else {
       // Variable consumed in source but never declared in any .env file
-      const fileRef = `${loc.filePath}:${loc.lineNumber}`;
       variableMap.set(itemKey, {
         key: itemKey,
         defaultValue: undefined,
         comment: undefined,
         usedInFiles: [fileRef],
+        declaredInFiles: collectDeclaredIn(itemKey),
         category: categorizeVariable(itemKey),
         isPublic: /^(NEXT_PUBLIC_|VITE_|REACT_APP_)/.test(itemKey)
       });
@@ -199,19 +275,132 @@ function groupVariablesByCategory(variables: EnvVariable[]): Map<string, EnvVari
   return grouped;
 }
 
+interface DirectorySection {
+  title: string;
+  variables?: EnvVariable[];
+  undeclaredSubGroups?: Map<string, EnvVariable[]>;
+}
+
+/** Returns the parent directory of a relative file path, or "." for root-level files. */
+function directoryOfFile(filePath: string): string {
+  const idx = filePath.lastIndexOf("/");
+  if (idx < 0) return ".";
+  return filePath.slice(0, idx);
+}
+
+function displayDirectory(dir: string): string {
+  return dir === "." ? "./" : `${dir}/`;
+}
+
+/** Strips the ":line" suffix from a usage file reference and returns its directory. */
+function usageDirectory(fileRef: string): string {
+  return directoryOfFile(fileRef.replace(/:\d+$/, ""));
+}
+
+/** Directory containing the most call-sites for a variable, as a usage-based fallback. */
+function dominantUsageDirectory(v: EnvVariable): string {
+  const counts = new Map<string, number>();
+  for (const ref of v.usedInFiles) {
+    const dir = usageDirectory(ref);
+    counts.set(dir, (counts.get(dir) || 0) + 1);
+  }
+
+  let best = "";
+  let bestCount = 0;
+  for (const [dir, count] of counts) {
+    if (count > bestCount || (count === bestCount && (best === "" || dir < best))) {
+      best = dir;
+      bestCount = count;
+    }
+  }
+
+  return best;
+}
+
+/**
+ * Groups variables by the directory that declares them.
+ * - A variable appears under EVERY directory that declares it, so each
+ *   directory section is the complete list of that directory's variables.
+ * - Variables never declared (consumed in code only) -> an "Undeclared" section,
+ *   sub-grouped by their dominant usage directory.
+ */
+function groupVariablesByDirectory(variables: EnvVariable[]): DirectorySection[] {
+  const declared = new Map<string, EnvVariable[]>();
+  const undeclared: EnvVariable[] = [];
+
+  for (const v of variables) {
+    const dirs = [...new Set(v.declaredInFiles.map(directoryOfFile))];
+    if (dirs.length === 0) {
+      undeclared.push(v);
+    } else {
+      for (const dir of dirs) {
+        const list = declared.get(dir) || [];
+        list.push(v);
+        declared.set(dir, list);
+      }
+    }
+  }
+
+  const sections: DirectorySection[] = [];
+  for (const dir of [...declared.keys()].sort()) {
+    sections.push({ title: displayDirectory(dir), variables: declared.get(dir)! });
+  }
+  if (undeclared.length > 0) {
+    const subGroups = new Map<string, EnvVariable[]>();
+    for (const v of undeclared) {
+      const dir = dominantUsageDirectory(v);
+      const list = subGroups.get(dir) || [];
+      list.push(v);
+      subGroups.set(dir, list);
+    }
+    sections.push({
+      title: "Undeclared (referenced in code, no .env declaration)",
+      undeclaredSubGroups: subGroups
+    });
+  }
+
+  return sections;
+}
+
+/**
+ * True when a comment line contains an actual environment value rather than
+ * documentation. Commented-out assignments and URIs with embedded credentials
+ * must never be rendered into the exportable `.env.example`.
+ */
+function looksLikeEnvValue(commentLine: string): boolean {
+  const line = commentLine.trim();
+  if (/^[A-Za-z_][A-Za-z0-9_]*=/.test(line)) return true;
+  if (/[a-zA-Z][a-zA-Z0-9+.-]*:\/\/[^\s]+:[^\s@]+@/.test(line)) return true;
+  return false;
+}
+
 function appendVariable(
   lines: string[],
   v: EnvVariable,
-  opts: { includeDescriptions: boolean; includeSourceHints: boolean; includeExampleValues: boolean }
+  opts: {
+    includeDescriptions: boolean;
+    includeSourceHints: boolean;
+    includeExampleValues: boolean;
+    includeDeclaredIn: boolean;
+  }
 ): void {
   if (opts.includeDescriptions && v.comment) {
     const cleaned = v.comment.replace(/^#\s*/, "").trim();
     if (cleaned) {
       const commentLines = cleaned.split("\n");
       for (const cl of commentLines) {
-        lines.push(`# ${cl}`);
+        const line = cl.trim().replace(/^#+\s*/, "");
+        // Safety: comment lines that carry actual values (commented-out
+        // assignments, URIs with credentials) must never reach the exportable
+        // .env.example. They leak real secrets and don't describe the variable.
+        if (looksLikeEnvValue(line)) continue;
+        lines.push(`# ${line}`);
       }
     }
+  }
+
+  if (opts.includeDeclaredIn && v.declaredInFiles.length > 0) {
+    lines.push(`# Declared in: ${v.declaredInFiles.join(", ")}`);
   }
 
   if (opts.includeSourceHints && v.usedInFiles.length > 0) {

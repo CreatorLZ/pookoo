@@ -1,6 +1,6 @@
 {
   "name": "@pookoo/scanner",
-  "version": "0.1.8",
+  "version": "0.2.0",
   "private": false,
   "description": "Deterministic static analysis engine for environment variable discovery, AST parsing, knowledge graph construction, and configuration auditing.",
   "keywords": [
@@ -27,6 +27,8 @@
   ],
   "scripts": {
     "build": "tsc",
+    "clean": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true});require('fs').rmSync('tsconfig.tsbuildinfo',{force:true})\"",
+    "prepublishOnly": "pnpm clean && pnpm build",
     "dev": "tsc -w",
     "test": "vitest run --passWithNoTests",
     "lint": "eslint src/"

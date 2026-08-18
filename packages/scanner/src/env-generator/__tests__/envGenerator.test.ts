@@ -256,4 +256,209 @@ describe("generateEnvExample", () => {
     // MONGODB_URI now correctly matches the MongoDB-specific placeholder (before generic URL/URI)
     expect(outputWithExamples).toContain("MONGODB_URI=mongodb://localhost:27017/myapp");
   });
+
+  it("SAFETY: strips commented-out secret values from description comments", () => {
+    const result = makeScanResult({
+      nodes: [
+        {
+          id: "config:LOG_SALT",
+          kind: "ConfigurationItem",
+          label: "LOG_SALT",
+          metadata: {
+            isRequired: true,
+            rawComment:
+              "# bagxtra starts here\n" +
+              "# NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_Y29ycmVjdA\n" +
+              "# CLERK_SECRET_KEY=sk_test_CyiO1RBnykcXaQ1ioEqKxIcC88EfAW6f5L1KI5bufK\n" +
+              "# MONGODB_URI=mongodb+srv://bagxtrateam_db_user:1e8scntfkgeRDbXo@host/db\n" +
+              "# Reasonable doc line\n"
+          }
+        }
+      ],
+      edges: []
+    });
+
+    const output = generateEnvExample(result, { includeDescriptions: true });
+
+    // Real secret values must NEVER appear, even when they live in comments
+    expect(output).not.toContain("pk_test_Y29ycmVjdA");
+    expect(output).not.toContain("sk_test_CyiO1RBnykcXaQ1ioEqKxIcC88EfAW6f5L1KI5bufK");
+    expect(output).not.toContain("bagxtrateam_db_user");
+    expect(output).not.toContain("1e8scntfkgeRDbXo");
+    // The bagxtra marker line and the doc line are legitimate comments and stay
+    expect(output).toContain("# bagxtra starts here");
+    expect(output).toContain("# Reasonable doc line");
+    expect(output).toContain("LOG_SALT=");
+  });
+
+  it("groups variables by declaring directory when enabled", () => {
+    const result = makeScanResult({
+      nodes: [
+        {
+          id: "config:DATABASE_URL",
+          kind: "ConfigurationItem",
+          label: "DATABASE_URL",
+          metadata: {
+            sourceLocation: { filePath: "apps/api/.env", lineNumber: 1, columnRange: [0, 12] }
+          }
+        },
+        {
+          id: "config:PORT",
+          kind: "ConfigurationItem",
+          label: "PORT",
+          metadata: { sourceLocation: { filePath: ".env", lineNumber: 1, columnRange: [0, 4] } }
+        }
+      ],
+      edges: [
+        { id: "e1", sourceId: "file:apps/api/.env", targetId: "config:DATABASE_URL", kind: "DECLARES" },
+        { id: "e2", sourceId: "file:.env", targetId: "config:PORT", kind: "DECLARES" }
+      ]
+    });
+
+    const output = generateEnvExample(result, { groupByDirectory: true });
+    expect(output).toContain("# → apps/api/");
+    expect(output).toContain("# → ./");
+    expect(output).toContain("# Declared in: apps/api/.env");
+    expect(output).toContain("# Declared in: .env");
+  });
+
+  it("lists variables declared in multiple files under every declaring directory", () => {
+    const result = makeScanResult({
+      nodes: [
+        {
+          id: "config:CORS_ORIGIN",
+          kind: "ConfigurationItem",
+          label: "CORS_ORIGIN",
+          metadata: { sourceLocation: { filePath: ".env", lineNumber: 1, columnRange: [0, 11] } }
+        }
+      ],
+      edges: [
+        { id: "e1", sourceId: "file:.env", targetId: "config:CORS_ORIGIN", kind: "DECLARES" },
+        { id: "e2", sourceId: "file:apps/api/.env", targetId: "config:CORS_ORIGIN", kind: "DECLARES" }
+      ]
+    });
+
+    const output = generateEnvExample(result, { groupByDirectory: true });
+    // Must appear under BOTH directories so each section is a complete list
+    expect(output).toContain("# → ./");
+    expect(output).toContain("# → apps/api/");
+    expect(output).toContain("# Declared in: .env, apps/api/.env");
+    // A multi-dir variable must not be pulled out of its directories' sections
+    expect(output).not.toContain("Shared (declared in multiple directories)");
+  });
+
+  it("groups consumed-but-undeclared variables by dominant usage directory", () => {
+    const result = makeScanResult({
+      nodes: [
+        {
+          id: "callsite:1",
+          kind: "CallSite",
+          label: "FEATURE_FLAG_X (DIRECT_MEMBER)",
+          metadata: {
+            itemKey: "FEATURE_FLAG_X",
+            callType: "DIRECT_MEMBER",
+            sourceLocation: { filePath: "apps/web/src/analytics.ts", lineNumber: 20 }
+          }
+        },
+        {
+          id: "callsite:2",
+          kind: "CallSite",
+          label: "FEATURE_FLAG_X (DIRECT_MEMBER)",
+          metadata: {
+            itemKey: "FEATURE_FLAG_X",
+            callType: "DIRECT_MEMBER",
+            sourceLocation: { filePath: "apps/web/src/app.ts", lineNumber: 8 }
+          }
+        }
+      ],
+      edges: []
+    });
+
+    const output = generateEnvExample(result, { groupByDirectory: true });
+    expect(output).toContain("# → Undeclared (referenced in code, no .env declaration)");
+    expect(output).toContain("# apps/web/src/");
+    expect(output).toContain("FEATURE_FLAG_X=");
+  });
+
+  it("ignores .env.example files when determining declaration directories", () => {
+    const result = makeScanResult({
+      nodes: [
+        {
+          id: "config:API_KEY",
+          kind: "ConfigurationItem",
+          label: "API_KEY",
+          metadata: { sourceLocation: { filePath: "apps/api/.env", lineNumber: 1, columnRange: [0, 7] } }
+        }
+      ],
+      edges: [
+        { id: "e1", sourceId: "file:.env.example", targetId: "config:API_KEY", kind: "DECLARES" },
+        { id: "e2", sourceId: "file:apps/api/.env", targetId: "config:API_KEY", kind: "DECLARES" }
+      ]
+    });
+
+    const output = generateEnvExample(result, { groupByDirectory: true });
+    expect(output).toContain("# → apps/api/");
+    expect(output).not.toContain(".env.example");
+    expect(output).toContain("# Declared in: apps/api/.env");
+  });
+
+  it("directory grouping takes precedence over category grouping", () => {
+    const result = makeScanResult({
+      nodes: [
+        {
+          id: "config:CLERK_SECRET_KEY",
+          kind: "ConfigurationItem",
+          label: "CLERK_SECRET_KEY",
+          metadata: { sourceLocation: { filePath: "apps/api/.env", lineNumber: 1, columnRange: [0, 16] } }
+        }
+      ],
+      edges: [
+        { id: "e1", sourceId: "file:apps/api/.env", targetId: "config:CLERK_SECRET_KEY", kind: "DECLARES" }
+      ]
+    });
+
+    const output = generateEnvExample(result, { groupByDirectory: true, groupByCategory: true });
+    expect(output).toContain("# → apps/api/");
+    expect(output).not.toContain("Authentication (Clerk)");
+  });
+
+  it("does not add declared-in hints unless directory grouping is enabled", () => {
+    const result = makeScanResult({
+      nodes: [
+        {
+          id: "config:DATABASE_URL",
+          kind: "ConfigurationItem",
+          label: "DATABASE_URL",
+          metadata: { sourceLocation: { filePath: "apps/api/.env", lineNumber: 1, columnRange: [0, 12] } }
+        }
+      ],
+      edges: [
+        { id: "e1", sourceId: "file:apps/api/.env", targetId: "config:DATABASE_URL", kind: "DECLARES" }
+      ]
+    });
+
+    const output = generateEnvExample(result);
+    expect(output).not.toContain("# Declared in:");
+    expect(output).not.toContain("# → ");
+    expect(output).toContain("DATABASE_URL=");
+  });
+
+  it("handles variables with neither declaration nor usage without a bogus directory marker", () => {
+    const result = makeScanResult({
+      nodes: [
+        {
+          id: "config:ORPHAN_VAR",
+          kind: "ConfigurationItem",
+          label: "ORPHAN_VAR",
+          metadata: {}
+        }
+      ],
+      edges: []
+    });
+
+    const output = generateEnvExample(result, { groupByDirectory: true });
+    expect(output).toContain("# → Undeclared (referenced in code, no .env declaration)");
+    expect(output).toContain("ORPHAN_VAR=");
+    expect(output).not.toContain("# /");
+  });
 });

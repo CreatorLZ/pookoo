@@ -5,6 +5,10 @@
       "dependsOn": ["^build"],
       "outputs": ["dist/**", "build/**"]
     },
+    "clean": {
+      "cache": false,
+      "dependsOn": ["^clean"]
+    },
     "test": {
       "dependsOn": ["build"],
       "inputs": ["src/**/*.ts", "test/**/*.ts"]

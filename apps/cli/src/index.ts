@@ -109,6 +109,7 @@ program
   .option("--no-sources", "Omit source file usage hints")
   .option("--examples", "Include placeholder example values")
   .option("--no-groups", "Don't group variables by category")
+  .option("--group-by-dir", "Group variables by the directory that declares them (monorepo-aware)")
   .option("-o, --output <file>", "Output file path (relative to target, or absolute)")
   .option("--force", "Overwrite existing output file")
   .action(
@@ -119,6 +120,7 @@ program
         sources: boolean;
         examples: boolean;
         groups: boolean;
+        groupByDir?: boolean;
         output?: string;
         force?: boolean;
       }
@@ -141,7 +143,8 @@ program
           includeDescriptions: options?.comments !== false,
           includeSourceHints: options?.sources !== false,
           includeExampleValues: options?.examples === true,
-          groupByCategory: options?.groups !== false
+          groupByCategory: options?.groups !== false,
+          groupByDirectory: options?.groupByDir === true
         });
 
         fs.writeFileSync(outputPath, envContent, "utf-8");
