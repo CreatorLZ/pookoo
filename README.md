@@ -14,7 +14,7 @@ Pookoo reads your source code via AST parsing and catches all of this. It never 
 
 **`pookoo scan`** finds variables with no static source references, inconsistent fallback defaults, and secrets exposed through client-side prefixes (while correctly ignoring publishable keys).
 
-**`pookoo init`** scans your code and generates a `.env.example` with every discovered variable, grouped by category, with descriptions and source file hints.
+**`pookoo init`** scans your code and generates a `.env.example` with every discovered variable, grouped by the directory that declares them (monorepo-aware), with descriptions and source file hints.
 
 **`pookoo docs`** generates a markdown config reference with categorized tables showing each variable, its scope (Client/Server), and where it's used.
 
