@@ -48,3 +48,6 @@ packages/shared/README.md
 npm-debug.log*
 yarn-debug.log*
 pnpm-debug.log*
+
+# Local AI generated artifacts
+learning_knowledge_graph.md
